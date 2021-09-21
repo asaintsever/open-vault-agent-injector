@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "talend-vault-sidecar-injector.fullname" . }}
+  name: {{ include "open-vault-agent-injector.fullname" . }}
   labels:
-{{ include "talend-vault-sidecar-injector.labels" . | indent 4 }}
+{{ include "open-vault-agent-injector.labels" . | indent 4 }}
 data:
   injectionconfig.yaml: |
 {{ (tpl (.Files.Get "config/injectionconfig.yaml") . ) | indent 4 }}

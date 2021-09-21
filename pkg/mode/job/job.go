@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,7 +13,7 @@
 package job
 
 import (
-	m "talend/vault-sidecar-injector/pkg/mode"
+	m "asaintsever/open-vault-agent-injector/pkg/mode"
 )
 
 func init() {

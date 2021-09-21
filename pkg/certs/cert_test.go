@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -35,8 +33,8 @@ func TestCert(t *testing.T) {
 	}
 
 	cert := &Cert{
-		CN:       "Vault Sidecar Injector",
-		Hosts:    strings.Split("vault-sidecar-injector,vault-sidecar-injector.default,vault-sidecar-injector.default.svc", ","),
+		CN:       "Open Vault Agent Injector",
+		Hosts:    strings.Split("open-vault-agent-injector,open-vault-agent-injector.default,open-vault-agent-injector.default.svc", ","),
 		Lifetime: 10,
 	}
 

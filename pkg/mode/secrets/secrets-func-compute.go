@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,17 +13,17 @@
 package secrets
 
 import (
+	cfg "asaintsever/open-vault-agent-injector/pkg/config"
+	ctx "asaintsever/open-vault-agent-injector/pkg/context"
+	m "asaintsever/open-vault-agent-injector/pkg/mode"
 	"errors"
 	"fmt"
 	"strings"
-	cfg "talend/vault-sidecar-injector/pkg/config"
-	ctx "talend/vault-sidecar-injector/pkg/context"
-	m "talend/vault-sidecar-injector/pkg/mode"
 
 	"k8s.io/klog"
 )
 
-func secretsModeCompute(config *cfg.VSIConfig, labels, annotations map[string]string) (ctx.ModeConfig, error) {
+func secretsModeCompute(config *cfg.OVAIConfig, labels, annotations map[string]string) (ctx.ModeConfig, error) {
 	secretsType := strings.ToLower(annotations[config.VaultInjectorAnnotationsFQ[vaultInjectorAnnotationSecretsTypeKey]])
 	secretsInjectionMethod := strings.ToLower(annotations[config.VaultInjectorAnnotationsFQ[vaultInjectorAnnotationSecretsInjectionMethodKey]])
 	secretsPath := strings.Split(annotations[config.VaultInjectorAnnotationsFQ[vaultInjectorAnnotationSecretsPathKey]], secretsAnnotationSeparator)

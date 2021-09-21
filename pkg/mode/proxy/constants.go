@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,10 +12,10 @@
 
 package proxy
 
-import "talend/vault-sidecar-injector/pkg/config"
+import "asaintsever/open-vault-agent-injector/pkg/config"
 
 const (
-	//--- Vault Sidecar Injector modes annotation keys (without prefix)
+	//--- Open Vault Agent Injector modes annotation keys (without prefix)
 	vaultInjectorAnnotationProxyPortKey = "proxy-port" // Optional. Port assigned to local Vault proxy.
 )
 
@@ -28,10 +26,10 @@ const (
 
 const (
 	//--- Vault Agent placeholders related to modes
-	vaultProxyPortPlaceholder = "<VSI_PROXY_PORT>"
+	vaultProxyPortPlaceholder = "<OVAI_PROXY_PORT>"
 )
 
 const (
 	//--- Vault Agent env vars related to modes
-	vaultProxyConfigPlaceholderEnv = "VSI_PROXY_CONFIG_PLACEHOLDER"
+	vaultProxyConfigPlaceholderEnv = "OVAI_PROXY_CONFIG_PLACEHOLDER"
 )

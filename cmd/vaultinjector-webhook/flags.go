@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -41,7 +39,7 @@ func parseFlags() string {
 	webhookCmd.StringVar(&webhookParameters.CertFile, "certfile", "tls.crt", "PEM-encoded webhook certificate used for TLS")
 	webhookCmd.StringVar(&webhookParameters.KeyFile, "keyfile", "tls.key", "PEM-encoded webhook private key used for TLS")
 	webhookCmd.StringVar(&webhookParameters.WebhookCfgName, "webhookcfgname", "", "name of MutatingWebhookConfiguration resource")
-	webhookCmd.StringVar(&webhookParameters.AnnotationKeyPrefix, "annotationkeyprefix", "sidecar.vault", "annotations key prefix")
+	webhookCmd.StringVar(&webhookParameters.AnnotationKeyPrefix, "annotationkeyprefix", "ovai", "annotations key prefix")
 	webhookCmd.StringVar(&webhookParameters.AppLabelKey, "applabelkey", "application.name", "key for application label")
 	webhookCmd.StringVar(&webhookParameters.AppServiceLabelKey, "appservicelabelkey", "service.name", "key for application's service label")
 	webhookCmd.StringVar(&webhookParameters.InjectionCfgFile, "injectioncfgfile", "", "file containing the mutation configuration (initcontainers, sidecars, volumes, ...)")
@@ -55,9 +53,9 @@ func parseFlags() string {
 		os.Exit(1)
 	}
 
-	vsiSubcommand := os.Args[1]
+	viSubcommand := os.Args[1]
 
-	switch vsiSubcommand {
+	switch viSubcommand {
 	case CertCmd:
 		klog.InitFlags(certCmd)
 		certCmd.Parse(os.Args[2:])
@@ -65,14 +63,14 @@ func parseFlags() string {
 		klog.InitFlags(webhookCmd)
 		webhookCmd.Parse(os.Args[2:])
 	case VersionCmd:
-		fmt.Println("VSI (Vault Sidecar Injector) version " + VERSION)
+		fmt.Println("OVAI (Open Vault Agent Injector) version " + VERSION)
 		os.Exit(0)
 	default:
 		usage(os.Args[0])
 		os.Exit(1)
 	}
 
-	return vsiSubcommand
+	return viSubcommand
 }
 
 func usage(program string) {

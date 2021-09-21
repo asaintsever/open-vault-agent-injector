@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,10 +14,10 @@ package config
 
 const (
 	//--- Init Containers defined in our injection config
-	VaultAgentInitContainerName = "tvsi-vault-agent-init"
-	VSIEnvInitContainerName     = "tvsi-env-init"
+	VaultAgentInitContainerName = "ovai-vault-agent-init"
+	OVAIEnvInitContainerName    = "ovai-env-init"
 
 	//--- Containers defined in our injection config
-	JobMonitoringContainerName = "tvsi-job-babysitter"
-	VaultAgentContainerName    = "tvsi-vault-agent"
+	JobMonitoringContainerName = "ovai-job-babysitter"
+	VaultAgentContainerName    = "ovai-vault-agent"
 )

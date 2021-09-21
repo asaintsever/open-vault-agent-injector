@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -95,11 +93,11 @@ func TestWebhookServer(t *testing.T) {
 					"kind":"Pod",
 					"metadata":{
 						"annotations":{
-							"sidecar.vault.talend.org/inject": "`+strconv.FormatBool(table.vaultInjection)+`"
+							"ovai.asaintsever.org/inject": "`+strconv.FormatBool(table.vaultInjection)+`"
 						},
 						"labels":{
-							"com.talend.application": "test",
-							"com.talend.service": "test-app-svc"
+							"com.ovai.application": "test",
+							"com.ovai.service": "test-app-svc"
 						}
 					},
 					"spec":{

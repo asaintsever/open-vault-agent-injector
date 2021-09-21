@@ -1,4 +1,4 @@
-## Default values for talend-vault-sidecar-injector
+## Default values for open-vault-agent-injector
 ## This is a YAML-formatted file
 ## Declare variables to be passed into your templates
 
@@ -14,21 +14,21 @@ revisionHistoryLimit: 3  # revision history limit in tiller / helm / k8s
 # ----------------------------------------------------------------------------
 
 image:
-  path: "talend/vault-sidecar-injector"  # VSI image path
-  tag: "latest"  # VSI image tag
+  path: "asaintsever/open-vault-agent-injector"  # OVAI image path
+  tag: "latest"  # OVAI image tag
   pullPolicy: IfNotPresent  # Pull policy for images: IfNotPresent or Always
   port: 8443  # service main port exposed by the image
   metricsPort: 9000  # metricsPort defines the port exposed by the image for metrics collection
 
-  applicationNameLabel: talend-vault-sidecar-injector  # applicationNameLabel represents the Talend Application Name and it must match the label com.talend.application from the docker image
-  serviceNameLabel: talend-vault-sidecar-injector  # serviceNameLabel represents the Talend Service Name and it must match the label com.talend.service from the docker image
+  applicationNameLabel: open-vault-agent-injector  # applicationNameLabel represents the Application Name and it must match the label com.ovai.application from the docker image
+  serviceNameLabel: open-vault-agent-injector  # serviceNameLabel represents the Service Name and it must match the label com.ovai.service from the docker image
 
 # ----------------------------------------------------------------------------
 # Define service properties
 # ----------------------------------------------------------------------------
 
 service:
-  name: talend-vault-sidecar-injector  # service name
+  name: open-vault-agent-injector  # service name
   prefixWithHelmRelease: false  # prefixWithHelmRelease defines whether the service name will be prefixed with Helm release name
   exposedServicePort: 443  # exposedServicePort is the port exposed by the K8s service (Kubernetes always assumes port 443 for webhooks)
   type: ClusterIP  # type is the Kubernetes service type: ClusterIP, NodePort, LoadBalancer, ExternalName
@@ -41,15 +41,15 @@ mutatingwebhook:
   loglevel: 4 # webhook log level (set to 5 for debug)
   cert:
     generated: true # controls whether webhook certificates, private key and k8s secret are generated. If not, you have to provide k8s secret with name secretName.
-    secretName: talend-vault-sidecar-injector-cert # name of the k8s secret that contains the webhook certificates and private key. Secret should be in webhook's namespace. To provide if generated is false.
+    secretName: open-vault-agent-injector-cert # name of the k8s secret that contains the webhook certificates and private key. Secret should be in webhook's namespace. To provide if generated is false.
     certlifetime: 10 # default lifetime in years for generated certificates. Not used if generated is false.
     cacertfile: ca.crt # default filename for webhook CA certificate (PEM-encoded) in generated or provided k8s secret
     certfile: tls.crt # default filename for webhook certificate (PEM-encoded) in generated or provided k8s secret
     keyfile: tls.key # default filename for webhook private key (PEM-encoded) in generated or provided k8s secret
   annotations:
-    keyPrefix: sidecar.vault.talend.org  # prefix used for all vault sidecar injector annotations
-    appLabelKey: com.talend.application  # annotation for application's name. Annotation's value used as Vault role by default.
-    appServiceLabelKey: com.talend.service  # annotation for service's name
+    keyPrefix: ovai.asaintsever.org  # prefix used for all OVAI annotations
+    appLabelKey: com.ovai.application  # annotation for application's name. Annotation's value used as Vault role by default.
+    appServiceLabelKey: com.ovai.service  # annotation for service's name
   failurePolicy: Ignore # defines how unrecognized errors and timeout errors from the admission webhook are handled. Allowed values are Ignore or Fail 
   namespaceSelector: # Enable none or only one of the options below
     boolean: false  # Enable to control, with label "vault-injection=enabled", the namespaces where injection is allowed (if false: all namespaces except _kube-system_ and _kube-public_) 
@@ -81,11 +81,11 @@ injectconfig:
       format: json # Vault log format: standard, json
     resources:
       limits:
-        cpu: 200m  # Vault sidecar CPU resource limits
-        memory: 80Mi  # Vault sidecar memory resource limits
+        cpu: 200m  # Vault Agent CPU resource limits
+        memory: 80Mi  # Vault Agent memory resource limits
       requests:
-        cpu: 160m  # Vault sidecar CPU resource requests
-        memory: 65Mi  # Vault sidecar memory resource requests
+        cpu: 160m  # Vault Agent CPU resource requests
+        memory: 65Mi  # Vault Agent memory resource requests
 
 # ----------------------------------------------------------------------------
 # Define resources requests and limits

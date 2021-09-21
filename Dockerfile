@@ -1,7 +1,7 @@
-FROM golang:1.14.4 AS buildTVSI
+FROM golang:1.14.4 AS buildOVAI
 
-COPY . /vaultsidecarinjector
-RUN cd /vaultsidecarinjector && make build OFFLINE=true
+COPY . /ovai-src
+RUN cd /ovai-src && make build OFFLINE=true
 
 FROM centos:7.9.2009 AS baseImage
 
@@ -15,35 +15,33 @@ FROM scratch
 
 USER root
 
-# Talend home, Talend user/user group/user id
-ENV TALEND_HOME=/opt/talend
-ENV TALEND_USER=talend
-ENV TALEND_USERGROUP=$TALEND_USER
-ENV TALEND_UID=61000
+# OVAI home, OVAI user/user group/user id
+ENV OVAI_HOME=/opt/ovai
+ENV OVAI_USER=ovai
+ENV OVAI_USERGROUP=$OVAI_USER
+ENV OVAI_UID=61000
 
 COPY --from=baseImage / /
 
-# Create non-root user $TALEND_USER
+# Create non-root user $OVAI_USER
 RUN set -x \
-    && mkdir -p $TALEND_HOME \
-    && groupadd -r $TALEND_USERGROUP -g $TALEND_UID \
-    && useradd -l -u $TALEND_UID -r -g $TALEND_USERGROUP -m -d /home/$TALEND_USER -s /sbin/nologin $TALEND_USER \
-    && chmod 755 /home/$TALEND_USER \
-    && chmod -R "g+rwX" $TALEND_HOME \
-    && chown -R $TALEND_USER:$TALEND_USERGROUP $TALEND_HOME
+    && mkdir -p $OVAI_HOME \
+    && groupadd -r $OVAI_USERGROUP -g $OVAI_UID \
+    && useradd -l -u $OVAI_UID -r -g $OVAI_USERGROUP -m -d /home/$OVAI_USER -s /sbin/nologin $OVAI_USER \
+    && chmod 755 /home/$OVAI_USER \
+    && chmod -R "g+rwX" $OVAI_HOME \
+    && chown -R $OVAI_USER:$OVAI_USERGROUP $OVAI_HOME
 
-WORKDIR $TALEND_HOME
-USER $TALEND_UID
+WORKDIR $OVAI_HOME
+USER $OVAI_UID
 
-LABEL com.talend.maintainer="Talend <support@talend.com>" \
-      com.talend.url="https://www.talend.com/" \
-      com.talend.vendor="Talend" \
-      com.talend.name="Vault Sidecar Injector" \
-      com.talend.application="talend-vault-sidecar-injector" \
-      com.talend.service="talend-vault-sidecar-injector" \
-      com.talend.description="Kubernetes Webhook Admission Server for Vault sidecar injection"
+LABEL com.ovai.maintainer="asaintsever" \
+      com.ovai.name="Open Vault Agent Injector" \
+      com.ovai.application="open-vault-agent-injector" \
+      com.ovai.service="open-vault-agent-injector" \
+      com.ovai.description="Kubernetes Webhook Admission Server for Vault Agent injection"
 
-COPY --chown=talend:talend --from=buildTVSI /vaultsidecarinjector/target/vaultinjector-webhook ${TALEND_HOME}/webhook/
-COPY --chown=talend:talend --from=buildTVSI /vaultsidecarinjector/target/vaultinjector-env ${TALEND_HOME}/
+COPY --chown=ovai:ovai --from=buildOVAI /ovai-src/target/vaultinjector-webhook ${OVAI_HOME}/webhook/
+COPY --chown=ovai:ovai --from=buildOVAI /ovai-src/target/vaultinjector-env ${OVAI_HOME}/
 
-ENTRYPOINT ["/opt/talend/webhook/vaultinjector-webhook"]
+ENTRYPOINT ["/opt/ovai/webhook/vaultinjector-webhook"]

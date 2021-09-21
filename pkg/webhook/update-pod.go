@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -20,10 +18,10 @@ import (
 	"strconv"
 	"strings"
 
-	"talend/vault-sidecar-injector/pkg/config"
-	ctx "talend/vault-sidecar-injector/pkg/context"
-	m "talend/vault-sidecar-injector/pkg/mode"
-	"talend/vault-sidecar-injector/pkg/mode/secrets"
+	"asaintsever/open-vault-agent-injector/pkg/config"
+	ctx "asaintsever/open-vault-agent-injector/pkg/context"
+	m "asaintsever/open-vault-agent-injector/pkg/mode"
+	"asaintsever/open-vault-agent-injector/pkg/mode/secrets"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/klog"
@@ -72,7 +70,7 @@ func (vaultInjector *VaultInjector) updatePodSpec(pod *corev1.Pod) (patch []ctx.
 func (vaultInjector *VaultInjector) computeContext(podContainers []corev1.Container, labels, annotations map[string]string) (*ctx.InjectionContext, error) {
 	var k8sSaSecretsVolName, vaultInjectorSaSecretsVolName string
 
-	// Get status for Vault Sidecar Injector modes
+	// Get status for Open Vault Agent Injector modes
 	modesStatus := make(map[string]bool, len(m.VaultInjectorModes))
 	m.GetModesStatus(strings.Split(annotations[vaultInjector.VaultInjectorAnnotationsFQ[ctx.VaultInjectorAnnotationModeKey]], ","), modesStatus)
 
@@ -141,7 +139,7 @@ func (vaultInjector *VaultInjector) computeContext(podContainers []corev1.Contai
 
 	for mode, enabled := range modesStatus {
 		if enabled && m.VaultInjectorModes[mode].ComputeTemplatesFunc != nil {
-			modesConfig[mode], err = m.VaultInjectorModes[mode].ComputeTemplatesFunc(vaultInjector.VSIConfig, labels, annotations)
+			modesConfig[mode], err = m.VaultInjectorModes[mode].ComputeTemplatesFunc(vaultInjector.OVAIConfig, labels, annotations)
 			if err != nil {
 				return nil, err
 			}
@@ -161,7 +159,7 @@ func (vaultInjector *VaultInjector) computeContext(podContainers []corev1.Contai
 func (vaultInjector *VaultInjector) patchPod(podSpec corev1.PodSpec, annotations map[string]string, context *ctx.InjectionContext) (patch []ctx.PatchOperation, err error) {
 	for mode, enabled := range context.ModesStatus {
 		if enabled && m.VaultInjectorModes[mode].PatchPodFunc != nil {
-			patchPod, err := m.VaultInjectorModes[mode].PatchPodFunc(vaultInjector.VSIConfig, podSpec, annotations, context)
+			patchPod, err := m.VaultInjectorModes[mode].PatchPodFunc(vaultInjector.OVAIConfig, podSpec, annotations, context)
 			if err != nil {
 				return nil, err
 			}

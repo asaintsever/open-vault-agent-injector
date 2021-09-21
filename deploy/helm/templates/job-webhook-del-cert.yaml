@@ -2,9 +2,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ include "talend-vault-sidecar-injector.fullname" . }}-del"
+  name: "{{ include "open-vault-agent-injector.fullname" . }}-del"
   labels:
-{{ include "talend-vault-sidecar-injector.labels" . | indent 4 }}
+{{ include "open-vault-agent-injector.labels" . | indent 4 }}
   annotations:
     # This is what defines this resource as a hook. Without this line, the job is considered part of the release.
     "helm.sh/hook": pre-delete
@@ -12,17 +12,17 @@ metadata:
 spec:
   template:
     metadata:
-      name: "{{ include "talend-vault-sidecar-injector.fullname" . }}-del"
+      name: "{{ include "open-vault-agent-injector.fullname" . }}-del"
     spec:
       restartPolicy: Never
       {{- if .Values.registryKey }}
       imagePullSecrets:
         - name: {{ .Values.registryKey }}
       {{- end }}
-      serviceAccountName: talend-vault-sidecar-injector
+      serviceAccountName: open-vault-agent-injector
       containers:
-      - name: {{ include "talend-vault-sidecar-injector.fullname" . }}
-        image: {{ include "talend-vault-sidecar-injector.image" .Values }}
+      - name: {{ include "open-vault-agent-injector.fullname" . }}
+        image: {{ include "open-vault-agent-injector.image" .Values }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
           - name: POD_NAMESPACE

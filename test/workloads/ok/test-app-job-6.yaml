@@ -8,13 +8,13 @@ spec:
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-type: "static" # static secrets
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-type: "static" # static secrets
         # When dealing with static secrets: no need to enable 'job' mode. For this test, we explicitly declare it.
-        sidecar.vault.talend.org/mode: "job"
+        ovai.asaintsever.org/mode: "job"
       labels:
-        com.talend.application: test
-        com.talend.service: test-app-svc
+        com.ovai.application: test
+        com.ovai.service: test-app-svc
     spec:
       restartPolicy: Never
       # When dealing with static secrets: no need for a custom serviceAccountName 

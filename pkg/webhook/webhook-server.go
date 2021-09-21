@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,12 +13,12 @@
 package webhook
 
 import (
+	cfg "asaintsever/open-vault-agent-injector/pkg/config"
+	m "asaintsever/open-vault-agent-injector/pkg/mode"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	cfg "talend/vault-sidecar-injector/pkg/config"
-	m "talend/vault-sidecar-injector/pkg/mode"
 
 	admv1 "k8s.io/api/admission/v1"
 	admv1beta1 "k8s.io/api/admission/v1beta1"
@@ -42,7 +40,7 @@ var ignoredNamespaces = []string{
 }
 
 // New : init new VaultInjector type
-func New(config *cfg.VSIConfig, server *http.Server) *VaultInjector {
+func New(config *cfg.OVAIConfig, server *http.Server) *VaultInjector {
 	// Add mode annotations
 	for _, mode := range m.VaultInjectorModes {
 		vaultInjectorAnnotationKeys = append(vaultInjectorAnnotationKeys, mode.Annotations...)
@@ -59,8 +57,8 @@ func New(config *cfg.VSIConfig, server *http.Server) *VaultInjector {
 	}
 
 	return &VaultInjector{
-		VSIConfig: config,
-		Server:    server,
+		OVAIConfig: config,
+		Server:     server,
 	}
 }
 
@@ -99,7 +97,7 @@ func (vaultInjector *VaultInjector) Serve(w http.ResponseWriter, r *http.Request
 	}
 
 	// Webhook can currently receive either v1 or v1beta1 AdmissionReview objects.
-	// v1 is the default, internal version in use by VSI (v1beta1 support will be removed).
+	// v1 is the default, internal version in use by OVAI (v1beta1 support will be removed).
 	// If v1beta1 is received, it will be converted into v1 and back to v1beta1 in response
 	// (as spec states response should use same version as request)
 	arInVersion := admv1.SchemeGroupVersion

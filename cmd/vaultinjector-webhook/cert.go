@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,15 +13,15 @@
 package main
 
 import (
+	"asaintsever/open-vault-agent-injector/pkg/certs"
+	"asaintsever/open-vault-agent-injector/pkg/k8s"
 	"strings"
-	"talend/vault-sidecar-injector/pkg/certs"
-	"talend/vault-sidecar-injector/pkg/k8s"
 )
 
 func genCertificates() error {
 	// Generate certificates and key
 	cert := &certs.Cert{
-		CN:       "Vault Sidecar Injector",
+		CN:       "Open Vault Agent Injector",
 		Hosts:    strings.Split(certParameters.CertHostnames, ","),
 		Lifetime: certParameters.CertLifetime,
 	}

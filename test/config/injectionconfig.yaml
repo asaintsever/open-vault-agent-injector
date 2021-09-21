@@ -1,5 +1,5 @@
 initContainers:
-  - name: tvsi-vault-agent-init
+  - name: ovai-vault-agent-init
     image: vault:1.6.5
     imagePullPolicy: Always
     env:
@@ -8,10 +8,10 @@ initContainers:
       - name: VAULT_ADDR
         value: https://vault:8200
       # env var set by webhook
-      - name: VSI_SECRETS_TEMPLATES_PLACEHOLDER
+      - name: OVAI_SECRETS_TEMPLATES_PLACEHOLDER
         value: ""
       # env var set by webhook
-      - name: VSI_VAULT_ROLE
+      - name: OVAI_VAULT_ROLE
         value: ""
     command:
       - "sh"
@@ -24,8 +24,8 @@ initContainers:
           method "kubernetes" {
             mount_path = "auth/kubernetes"
             config = {
-              role = "${VSI_VAULT_ROLE}"
-              token_path = "/var/run/secrets/talend/vault-sidecar-injector/serviceaccount/token"
+              role = "${OVAI_VAULT_ROLE}"
+              token_path = "/var/run/secrets/open-vault-agent-injector/serviceaccount/token"
             }
           }
 
@@ -36,7 +36,7 @@ initContainers:
           }
         }
 
-        ${VSI_SECRETS_TEMPLATES_PLACEHOLDER}
+        ${OVAI_SECRETS_TEMPLATES_PLACEHOLDER}
         EOF
         
         docker-entrypoint.sh agent -config=vault-agent-config.hcl -exit-after-auth=true -log-level=info
@@ -45,27 +45,27 @@ initContainers:
     volumeMounts:
       # Mount path used to share secrets.
       - name: secrets
-        mountPath: /opt/talend/secrets
+        mountPath: /opt/ovai/secrets
       # The name's value will be overridden by the webhook to point to container's service account volume to use for Vault authentication.
-      - name: TVSI_SA_SECRETS_VOL_NAME
-        mountPath: /var/run/secrets/talend/vault-sidecar-injector/serviceaccount
+      - name: OVAI_SA_SECRETS_VOL_NAME
+        mountPath: /var/run/secrets/open-vault-agent-injector/serviceaccount
         readOnly: true
-  # This init container is only injected when annotation 'sidecar.vault.talend.org/secrets-injection-method' is set to 'env'
-  - name: tvsi-env-init
-    image: talend/vault-sidecar-injector
+  # This init container is only injected when annotation 'ovai.asaintsever.org/secrets-injection-method' is set to 'env'
+  - name: ovai-env-init
+    image: asaintsever/open-vault-agent-injector
     imagePullPolicy: IfNotPresent
     command:
       - "sh"
       - "-c"
       - |
-        cp /opt/talend/vaultinjector-env /opt/talend/secrets
+        cp /opt/ovai/vaultinjector-env /opt/ovai/secrets
     volumeMounts:
       # Mount path used to share secrets and where the vaultinjector-env process is copied so that it can be used from the application's containers
       - name: secrets
-        mountPath: /opt/talend/secrets
+        mountPath: /opt/ovai/secrets
 containers:
   # This container is only injected in K8S jobs to monitor app job's container termination and send signal to vault sidecar
-  - name: tvsi-job-babysitter
+  - name: ovai-job-babysitter
     image: everpeace/curl-jq
     imagePullPolicy: Always
     env:
@@ -74,7 +74,7 @@ containers:
           fieldRef:
             fieldPath: metadata.name
       # env var set by webhook
-      - name: VSI_JOB_CNT_NAME
+      - name: OVAI_JOB_CNT_NAME
         value: ""
     command:
       - "sh"
@@ -89,23 +89,23 @@ containers:
         fi
 
         while true; do
-          cntStatus=$(curl -s -X GET -H "Authorization: Bearer $jwt_sa_token" --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt https://$KUBERNETES_SERVICE_HOST/api/v1/namespaces/$pod_ns/pods/$POD_NAME?pretty=false | jq -c --raw-output --arg cntname "${VSI_JOB_CNT_NAME}" '.status.containerStatuses[] | select(.name == $cntname).state | keys[0]')
+          cntStatus=$(curl -s -X GET -H "Authorization: Bearer $jwt_sa_token" --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt https://$KUBERNETES_SERVICE_HOST/api/v1/namespaces/$pod_ns/pods/$POD_NAME?pretty=false | jq -c --raw-output --arg cntname "${OVAI_JOB_CNT_NAME}" '.status.containerStatuses[] | select(.name == $cntname).state | keys[0]')
           if [ "$cntStatus" = "terminated" ]; then
             echo "=> job container terminated: send signal"
-            touch /opt/talend/tvsi/vault-sidecars-signal-terminate
+            touch /opt/ovai/shared/vault-sidecars-signal-terminate
             exit 0
           fi
           sleep 5
         done
     volumeMounts:
       # Mount path used by injected sidecars to share data
-      - name: tvsi-shared
-        mountPath: /opt/talend/tvsi
+      - name: ovai-shared
+        mountPath: /opt/ovai/shared
       # The name's value will be overridden by the webhook
       - name: K8S_SA_SECRETS_VOL_NAME
         mountPath: /var/run/secrets/kubernetes.io/serviceaccount
         readOnly: true
-  - name: tvsi-vault-agent
+  - name: ovai-vault-agent
     image: vault:1.6.5
     imagePullPolicy: Always
     env:
@@ -114,25 +114,25 @@ containers:
       - name: VAULT_ADDR
         value: https://vault:8200
       # env var set by webhook
-      - name: VSI_JOB_WORKLOAD
+      - name: OVAI_JOB_WORKLOAD
         value: "false"
       # env var set by webhook
-      - name: VSI_PROXY_CONFIG_PLACEHOLDER
+      - name: OVAI_PROXY_CONFIG_PLACEHOLDER
         value: ""
       # env var set by webhook
-      - name: VSI_SECRETS_TEMPLATES_PLACEHOLDER
+      - name: OVAI_SECRETS_TEMPLATES_PLACEHOLDER
         value: ""
       # env var set by webhook
-      - name: VSI_VAULT_AUTH_METHOD
+      - name: OVAI_VAULT_AUTH_METHOD
         value: "kubernetes"
       # env var set by webhook
-      - name: VSI_VAULT_ROLE
+      - name: OVAI_VAULT_ROLE
         value: ""
     command:
       - "sh"
       - "-c"
       - |
-        if [ "${VSI_VAULT_AUTH_METHOD}" = "kubernetes" ]; then
+        if [ "${OVAI_VAULT_AUTH_METHOD}" = "kubernetes" ]; then
           cat <<EOF > vault-agent-config.hcl
         pid_file = "/home/vault/pidfile"
 
@@ -140,8 +140,8 @@ containers:
           method "kubernetes" {
             mount_path = "auth/kubernetes"
             config = {
-              role = "${VSI_VAULT_ROLE}"
-              token_path = "/var/run/secrets/talend/vault-sidecar-injector/serviceaccount/token"
+              role = "${OVAI_VAULT_ROLE}"
+              token_path = "/var/run/secrets/open-vault-agent-injector/serviceaccount/token"
             }
           }
 
@@ -152,11 +152,11 @@ containers:
           }
         }
 
-        ${VSI_PROXY_CONFIG_PLACEHOLDER}
+        ${OVAI_PROXY_CONFIG_PLACEHOLDER}
 
-        ${VSI_SECRETS_TEMPLATES_PLACEHOLDER}
+        ${OVAI_SECRETS_TEMPLATES_PLACEHOLDER}
         EOF
-        elif [ "${VSI_VAULT_AUTH_METHOD}" = "approle" ]; then
+        elif [ "${OVAI_VAULT_AUTH_METHOD}" = "approle" ]; then
           cat <<EOF > vault-agent-config.hcl
         pid_file = "/home/vault/pidfile"
 
@@ -164,8 +164,8 @@ containers:
           method "approle" {
             mount_path = "auth/approle"
             config = {
-              role_id_file_path = "/opt/talend/secrets/approle_roleid"
-              secret_id_file_path = "/opt/talend/secrets/approle_secretid"
+              role_id_file_path = "/opt/ovai/secrets/approle_roleid"
+              secret_id_file_path = "/opt/ovai/secrets/approle_secretid"
               remove_secret_id_file_after_reading = false
             }
           }
@@ -177,15 +177,15 @@ containers:
           }
         }
 
-        ${VSI_PROXY_CONFIG_PLACEHOLDER}
+        ${OVAI_PROXY_CONFIG_PLACEHOLDER}
 
-        ${VSI_SECRETS_TEMPLATES_PLACEHOLDER}
+        ${OVAI_SECRETS_TEMPLATES_PLACEHOLDER}
         EOF
         fi
-        if [ "${VSI_JOB_WORKLOAD}" = "true" ]; then
+        if [ "${OVAI_JOB_WORKLOAD}" = "true" ]; then
           docker-entrypoint.sh agent -config=vault-agent-config.hcl -log-level=info &
           while true; do
-            if [ -f "/opt/talend/tvsi/vault-sidecars-signal-terminate" ]; then
+            if [ -f "/opt/ovai/shared/vault-sidecars-signal-terminate" ]; then
               echo "=> exit (signal received)"
               export VAULT_TOKEN=$(cat /home/vault/.vault-token);
               vault token revoke -self;
@@ -207,18 +207,18 @@ containers:
               vault token revoke -self;
     volumeMounts:
       # Mount path used by injected sidecars to share data
-      - name: tvsi-shared
-        mountPath: /opt/talend/tvsi
+      - name: ovai-shared
+        mountPath: /opt/ovai/shared
       # Mount path used to share secrets. The associated volume is expected to be defined in application's manifest but in case it is not,
       # a default 'secrets' volume will be injected in the requesting pod (see definition below) so that mutation process does not fail.
       - name: secrets
-        mountPath: /opt/talend/secrets
+        mountPath: /opt/ovai/secrets
       # The name's value will be overridden by the webhook to point to container's service account volume to use for Vault authentication.
-      - name: TVSI_SA_SECRETS_VOL_NAME
-        mountPath: /var/run/secrets/talend/vault-sidecar-injector/serviceaccount
+      - name: OVAI_SA_SECRETS_VOL_NAME
+        mountPath: /var/run/secrets/open-vault-agent-injector/serviceaccount
         readOnly: true
 volumes:
-  - name: tvsi-shared
+  - name: ovai-shared
     emptyDir:
       medium: Memory
   # Note: if 'secrets' volume is defined in pod's manifest then it will be considered instead of the default definition below

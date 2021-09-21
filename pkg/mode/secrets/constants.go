@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,10 +12,10 @@
 
 package secrets
 
-import "talend/vault-sidecar-injector/pkg/config"
+import "asaintsever/open-vault-agent-injector/pkg/config"
 
 const (
-	//--- Vault Sidecar Injector modes annotation keys (without prefix)
+	//--- Open Vault Agent Injector modes annotation keys (without prefix)
 	vaultInjectorAnnotationSecretsPathKey            = "secrets-path"             // Optional. Full path, e.g.: "secret/<some value>", "aws/creds/<some role>", ... Several values separated by ','.
 	vaultInjectorAnnotationSecretsTemplateKey        = "secrets-template"         // Optional. Allow to override default template. Ignore 'secrets-path' annotation. Several values separated by ','.
 	vaultInjectorAnnotationTemplateDestKey           = "secrets-destination"      // Optional. If not set, secrets will be stored in file "secrets.properties". Several values separated by ','.
@@ -30,7 +28,7 @@ const (
 const (
 	secretsContainerName               = config.VaultAgentContainerName     // Name of our secrets container to inject
 	secretsInitContainerName           = config.VaultAgentInitContainerName // Name of our secrets init container to inject
-	secretsEnvInitContainerName        = config.VSIEnvInitContainerName     // Name of our env process init container to inject
+	secretsEnvInitContainerName        = config.OVAIEnvInitContainerName    // Name of our env process init container to inject
 	templateAppSvcDefaultDestination   = "secrets.properties"               // Default secrets destination
 	vaultDefaultSecretsEnginePath      = "secret"                           // Default path for Vault K/V Secrets Engine if no 'secrets-path' annotation
 	secretsAnnotationSeparator         = ","                                // Generic separator for secrets annotations' values
@@ -39,32 +37,32 @@ const (
 
 const (
 	//--- Volume & VolumeMount for secrets
-	SecretsVolName          = "secrets"             // Name of the volume shared between containers to store secrets file(s)
-	SecretsDefaultMountPath = "/opt/talend/secrets" // Default mount path for secretsVolName volume
+	SecretsVolName          = "secrets"           // Name of the volume shared between containers to store secrets file(s)
+	SecretsDefaultMountPath = "/opt/ovai/secrets" // Default mount path for secretsVolName volume
 )
 
 const (
 	//--- Vault Agent placeholders related to modes
-	secretsVaultPathPlaceholder       = "<VSI_SECRETS_VAULT_SECRETS_PATH>"
-	secretsDestinationPlaceholder     = "<VSI_SECRETS_DESTINATION>"
-	secretsTemplateContentPlaceholder = "<VSI_SECRETS_TEMPLATE_CONTENT>"
-	secretsTemplateCommandPlaceholder = "<VSI_SECRETS_TEMPLATE_COMMAND_TO_RUN>"
-	secretsVolMountPathPlaceholder    = "<VSI_SECRETS_VOL_MOUNTPATH>"
+	secretsVaultPathPlaceholder       = "<OVAI_SECRETS_VAULT_SECRETS_PATH>"
+	secretsDestinationPlaceholder     = "<OVAI_SECRETS_DESTINATION>"
+	secretsTemplateContentPlaceholder = "<OVAI_SECRETS_TEMPLATE_CONTENT>"
+	secretsTemplateCommandPlaceholder = "<OVAI_SECRETS_TEMPLATE_COMMAND_TO_RUN>"
+	secretsVolMountPathPlaceholder    = "<OVAI_SECRETS_VOL_MOUNTPATH>"
 )
 
 const (
 	//--- Vault Agent env vars related to modes
-	secretsTemplatesPlaceholderEnv = "VSI_SECRETS_TEMPLATES_PLACEHOLDER"
+	secretsTemplatesPlaceholderEnv = "OVAI_SECRETS_TEMPLATES_PLACEHOLDER"
 )
 
 const (
-	//--- Vault Sidecar Injector secrets type
+	//--- Open Vault Agent Injector secrets type
 	vaultInjectorSecretsTypeDynamic = "dynamic"
 	vaultInjectorSecretsTypeStatic  = "static"
 )
 
 const (
-	//--- Vault Sidecar Injector secrets injection method
+	//--- Open Vault Agent Injector secrets injection method
 	vaultInjectorSecretsInjectionMethodFile = "file"
 	vaultInjectorSecretsInjectionMethodEnv  = "env"
 )

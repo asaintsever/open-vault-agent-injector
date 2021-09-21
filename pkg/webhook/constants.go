@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,13 +13,13 @@
 package webhook
 
 const (
-	//--- Vault Sidecar Injector mount path for service accounts
-	vaultInjectorSATokenVolMountPath = "/var/run/secrets/talend/vault-sidecar-injector/serviceaccount"
+	//--- Open Vault Agent Injector mount path for service accounts
+	vaultInjectorSATokenVolMountPath = "/var/run/secrets/open-vault-agent-injector/serviceaccount"
 	k8sDefaultSATokenVolMountPath    = "/var/run/secrets/kubernetes.io/serviceaccount"
 )
 
 const (
 	//--- Vault Agent env vars
-	vaultRoleEnv       = "VSI_VAULT_ROLE"
-	vaultAuthMethodEnv = "VSI_VAULT_AUTH_METHOD"
+	vaultRoleEnv       = "OVAI_VAULT_ROLE"
+	vaultAuthMethodEnv = "OVAI_VAULT_AUTH_METHOD"
 )

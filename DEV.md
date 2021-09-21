@@ -1,4 +1,4 @@
-# Notes on Go modules used by Vault Sidecar Injector
+# Notes on Go modules used by Open Vault Agent Injector
 
 To interact with Kubernetes API, following Go modules and versions are in use:
 
@@ -16,7 +16,7 @@ go: k8s.io/apimachinery kubernetes-1.16.0 => v0.0.0-20190913080033-27d36303b655
 go: downloading k8s.io/apimachinery v0.0.0-20190913080033-27d36303b655
 ```
 
-> **Vault Sidecar Injector supports following [Kubernetes versions](README.md#kubernetes-compatibility)**
+> **Open Vault Agent Injector supports following [Kubernetes versions](README.md#kubernetes-compatibility)**
 
 Refer to <https://github.com/kubernetes/client-go#versioning> and <https://github.com/kubernetes/client-go/blob/master/INSTALL.md> for details on `client-go` / `api` / `apimachinery` compatibility and versions.
 

@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -59,8 +57,8 @@ type LifecycleHooks struct {
 	PostStart *corev1.Handler `yaml:"postStart" json:"postStart"`
 }
 
-// VSIConfig : Vault Sidecar Injector configuration
-type VSIConfig struct {
+// OVAIConfig : Open Vault Agent Injector configuration
+type OVAIConfig struct {
 	VaultInjectorAnnotationKeyPrefix string            // annotations prefix
 	VaultInjectorAnnotationsFQ       map[string]string // supported annotations (fully-qualified with prefix if any)
 	ApplicationLabelKey              string            // key for application label

@@ -1,6 +1,6 @@
 # Metrics
 
-Vault Sidecar Injector exposes a Prometheus endpoint at `/metrics` on port `metricsPort` (default: 9000).
+Open Vault Agent Injector exposes a Prometheus endpoint at `/metrics` on port `metricsPort` (default: 9000).
 
 Following collectors are available:
 
@@ -33,4 +33,4 @@ Go Collector
 - ... [full list here](https://github.com/prometheus/client_golang/blob/master/prometheus/go_collector.go)
 </details>
 
-![Grafana dashboard](grafana-vault-sidecar-injector.png)
+![Grafana dashboard](grafana-open-vault-agent-injector.png)

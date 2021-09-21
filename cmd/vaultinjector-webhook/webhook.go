@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,12 +13,12 @@
 package main
 
 import (
+	"asaintsever/open-vault-agent-injector/pkg/config"
+	"asaintsever/open-vault-agent-injector/pkg/k8s"
+	"asaintsever/open-vault-agent-injector/pkg/webhook"
 	"crypto/tls"
 	"fmt"
 	"net/http"
-	"talend/vault-sidecar-injector/pkg/config"
-	"talend/vault-sidecar-injector/pkg/k8s"
-	"talend/vault-sidecar-injector/pkg/webhook"
 
 	"k8s.io/klog"
 )
@@ -43,13 +41,13 @@ func createVaultInjector() (*webhook.VaultInjector, error) {
 	}
 
 	// Load webhook admission server's config
-	vsiCfg, err := config.Load(webhookParameters)
+	ovaiCfg, err := config.Load(webhookParameters)
 	if err != nil {
 		return nil, err
 	}
 
 	return webhook.New(
-		vsiCfg,
+		ovaiCfg,
 		&http.Server{
 			Addr:      fmt.Sprintf(":%v", webhookParameters.Port),
 			TLSConfig: &tls.Config{Certificates: []tls.Certificate{tlsCert}},

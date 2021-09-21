@@ -1,21 +1,21 @@
 SHELL=/bin/bash
 
 RELEASE_VERSION:=$(shell cat VERSION_RELEASE)
-VSI_VERSION:=$(shell cat VERSION_VSI)
+OVAI_VERSION:=$(shell cat VERSION_OVAI)
 CHART_VERSION:=$(shell cat VERSION_CHART)
 
-OWNER:=Talend
-REPO:=vault-sidecar-injector
+OWNER:=asaintsever
+REPO:=open-vault-agent-injector
 TARGET_WEBHOOK:=target/vaultinjector-webhook
 TARGET_ENV:=target/vaultinjector-env
-IMAGE_FQIN:=talend/vault-sidecar-injector
+IMAGE_FQIN:=asaintsever/open-vault-agent-injector
 
-# Inject VSI version into code at build time
-LDFLAGS=-ldflags "-X=main.VERSION=$(VSI_VERSION)"
+# Inject OVAI version into code at build time
+LDFLAGS=-ldflags "-X=main.VERSION=$(OVAI_VERSION)"
 
 .SILENT: ;  	# No need for @
 .ONESHELL: ; 	# Single shell for a target (required to properly use local variables)
-.PHONY: all clean test build-vsi-webhook build-vsi-env build package image image-from-build release
+.PHONY: all clean test build-ovai-webhook build-ovai-env build package image image-from-build release
 .DEFAULT_GOAL := build
 
 all: release
@@ -34,55 +34,55 @@ test: # for detailed outputs, run 'make test VERBOSE=true'
 		go test -mod=vendor -v ./...; \
 	fi
 
-build-vsi-webhook: clean test # run 'make build-vsi-webhook OFFLINE=true' to build from vendor folder
+build-ovai-webhook: clean test # run 'make build-ovai-webhook OFFLINE=true' to build from vendor folder
 	if [ -z ${OFFLINE} ] || [ ${OFFLINE} != true ];then \
-		echo "Building vsi-webhook ..."; \
+		echo "Building ovai-webhook ..."; \
 		GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -mod=mod -a -o $(TARGET_WEBHOOK) ./cmd/vaultinjector-webhook; \
 	else \
-		echo "Building vsi-webhook using local vendor folder (ie offline build) ..."; \
+		echo "Building ovai-webhook using local vendor folder (ie offline build) ..."; \
 		GOOS=linux GOARCH=amd64 go build $(LDFLAGS) -mod=vendor -a -o $(TARGET_WEBHOOK) ./cmd/vaultinjector-webhook; \
 	fi
 	cd target && sha512sum vaultinjector-webhook > vaultinjector-webhook.sha512
 
-build-vsi-env: # run 'make build-vsi-env OFFLINE=true' to build from vendor folder
+build-ovai-env: # run 'make build-ovai-env OFFLINE=true' to build from vendor folder
 	if [ -z ${OFFLINE} ] || [ ${OFFLINE} != true ];then \
-		echo "Building vsi-env ..."; \
+		echo "Building ovai-env ..."; \
 		GOOS=linux GOARCH=amd64 go build -mod=mod -a -o $(TARGET_ENV) ./cmd/vaultinjector-env; \
 	else \
-		echo "Building vsi-env using local vendor folder (ie offline build) ..."; \
+		echo "Building ovai-env using local vendor folder (ie offline build) ..."; \
 		GOOS=linux GOARCH=amd64 go build -mod=vendor -a -o $(TARGET_ENV) ./cmd/vaultinjector-env; \
 	fi
 	cd target && sha512sum vaultinjector-env > vaultinjector-env.sha512
 
-build: build-vsi-webhook build-vsi-env
+build: build-ovai-webhook build-ovai-env
 
 package:
 	set -e
 	mkdir -p target && cd target
 	echo "Archive Helm chart ..."
-	mkdir -p vault-sidecar-injector && cp -R ../README.md ../deploy/helm/* ./vault-sidecar-injector
-	sed -i "s/version: 0.0.0/version: ${CHART_VERSION}/;s/appVersion: 0.0.0/appVersion: ${VSI_VERSION}/" ./vault-sidecar-injector/Chart.yaml
-	sed -i "s/tag: \"latest\"  # VSI image tag/tag: \"${VSI_VERSION}\"  # VSI image tag/" ./vault-sidecar-injector/values.yaml
-	helm package vault-sidecar-injector
-	rm -R vault-sidecar-injector
-	helm lint ./vault-sidecar-injector-*.tgz --debug
+	mkdir -p open-vault-agent-injector && cp -R ../README.md ../deploy/helm/* ./open-vault-agent-injector
+	sed -i "s/version: 0.0.0/version: ${CHART_VERSION}/;s/appVersion: 0.0.0/appVersion: ${OVAI_VERSION}/" ./open-vault-agent-injector/Chart.yaml
+	sed -i "s/tag: \"latest\"  # OVAI image tag/tag: \"${OVAI_VERSION}\"  # OVAI image tag/" ./open-vault-agent-injector/values.yaml
+	helm package open-vault-agent-injector
+	rm -R open-vault-agent-injector
+	helm lint ./open-vault-agent-injector-*.tgz --debug
 
 image:
 	echo "Build image using Go container and multi-stage build ..."
-	docker build -t ${IMAGE_FQIN}:${VSI_VERSION} .
-	docker tag ${IMAGE_FQIN}:${VSI_VERSION} ${IMAGE_FQIN}
+	docker build -t ${IMAGE_FQIN}:${OVAI_VERSION} .
+	docker tag ${IMAGE_FQIN}:${OVAI_VERSION} ${IMAGE_FQIN}
 
 image-from-build: build
 	echo "Build image from local build ..."
-	docker build -f Dockerfile.local -t ${IMAGE_FQIN}:${VSI_VERSION} .
-	docker tag ${IMAGE_FQIN}:${VSI_VERSION} ${IMAGE_FQIN}
+	docker build -f Dockerfile.local -t ${IMAGE_FQIN}:${OVAI_VERSION} .
+	docker tag ${IMAGE_FQIN}:${OVAI_VERSION} ${IMAGE_FQIN}
 
 release: image-from-build package
 	read -p "Publish image (y/n)? " answer
 	case $$answer in \
 	y|Y ) \
 		docker login; \
-		docker push ${IMAGE_FQIN}:${VSI_VERSION}; \
+		docker push ${IMAGE_FQIN}:${OVAI_VERSION}; \
 		if [ "$$?" -ne 0 ]; then \
 			echo "Unable to publish image"; \
 			exit 1; \

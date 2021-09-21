@@ -3,9 +3,9 @@ kind: Service
 metadata:
   # BEWARE that shared services should not be prefixed with the Helm release name.
   # Please check .Values.service.prefixWithHelmRelease
-  name: {{ include "talend-vault-sidecar-injector.service.name" . }}
+  name: {{ include "open-vault-agent-injector.service.name" . }}
   labels:
-{{ include "talend-vault-sidecar-injector.labels" . | indent 4 }}
+{{ include "open-vault-agent-injector.labels" . | indent 4 }}
 {{- if .Values.image.metricsPort }}
     prometheus: "true"
 {{- end }}
@@ -21,6 +21,6 @@ spec:
       targetPort: http-metrics
     {{- end }}
   selector:
-    com.talend.application: {{ .Values.image.applicationNameLabel }}
-    com.talend.service: {{ .Values.image.serviceNameLabel }}
+    com.ovai.application: {{ .Values.image.applicationNameLabel }}
+    com.ovai.service: {{ .Values.image.serviceNameLabel }}
     release: {{ .Release.Name }}

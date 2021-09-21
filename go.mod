@@ -1,4 +1,4 @@
-module talend/vault-sidecar-injector
+module asaintsever/open-vault-agent-injector
 
 go 1.14
 

@@ -3,31 +3,31 @@
 Expand the name of the chart.
 Truncate at 63 chars characters due to limitations of the DNS system.
 */}}
-{{- define "talend-vault-sidecar-injector.name" -}}
+{{- define "open-vault-agent-injector.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Create a default fully qualified app name.
 */}}
-{{- define "talend-vault-sidecar-injector.fullname" -}}
-{{- $name := (include "talend-vault-sidecar-injector.name" .) -}}
+{{- define "open-vault-agent-injector.fullname" -}}
+{{- $name := (include "open-vault-agent-injector.name" .) -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 40 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Create a default chart name including the version number
 */}}
-{{- define "talend-vault-sidecar-injector.chart" -}}
-{{- $name := (include "talend-vault-sidecar-injector.name" .) -}}
+{{- define "open-vault-agent-injector.chart" -}}
+{{- $name := (include "open-vault-agent-injector.name" .) -}}
 {{- printf "%s-%s" $name .Chart.Version | replace "+" "_" -}}
 {{- end -}}
 
 {{/*
 Define mutating webhook failure policy (https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#failure-policy)
-Force 'Ignore' if only one replica (because 'Fail' will prevent any pod to start if the only one Vault Sidecar Injector pod is down...)
+Force 'Ignore' if only one replica (because 'Fail' will prevent any pod to start if the only one Open Vault Agent Injector pod is down...)
 */}}
-{{- define "talend-vault-sidecar-injector.failurePolicy" -}}
+{{- define "open-vault-agent-injector.failurePolicy" -}}
 {{- if eq .replicaCount 1.0 -}}
 Ignore
 {{else}}
@@ -38,7 +38,7 @@ Ignore
 {{/*
 Define mutating webhook namespace selector
 */}}
-{{- define "talend-vault-sidecar-injector.namespaceSelector" -}}
+{{- define "open-vault-agent-injector.namespaceSelector" -}}
 {{- if and (eq .Values.mutatingwebhook.namespaceSelector.boolean true) (eq .Values.mutatingwebhook.namespaceSelector.namespaced false) -}}
 namespaceSelector:
   matchLabels:
@@ -57,11 +57,11 @@ namespaceSelector:
 {{/*
 Define labels which are used throughout the chart files
 */}}
-{{- define "talend-vault-sidecar-injector.labels" -}}
-com.talend.application: {{ .Values.image.applicationNameLabel }}
-com.talend.service: {{ .Values.image.serviceNameLabel }}
-chart: {{ include "talend-vault-sidecar-injector.chart" . }}
-helm.sh/chart: {{ include "talend-vault-sidecar-injector.chart" . }}
+{{- define "open-vault-agent-injector.labels" -}}
+com.ovai.application: {{ .Values.image.applicationNameLabel }}
+com.ovai.service: {{ .Values.image.serviceNameLabel }}
+chart: {{ include "open-vault-agent-injector.chart" . }}
+helm.sh/chart: {{ include "open-vault-agent-injector.chart" . }}
 release: {{ .Release.Name }}
 heritage: {{ .Release.Service }}
 {{- end -}}
@@ -69,21 +69,21 @@ heritage: {{ .Release.Service }}
 {{/*
 Define the docker image (image.path:image.tag).
 */}}
-{{- define "talend-vault-sidecar-injector.image" -}}
+{{- define "open-vault-agent-injector.image" -}}
 {{- printf "%s%s:%s" (default "" .imageRegistry) .image.path (default "latest" .image.tag) -}}
 {{- end -}}
 
 {{/*
 Define the docker image for Job Babysitter sidecar container (image.path:image.tag).
 */}}
-{{- define "talend-vault-sidecar-injector.injectconfig.jobbabysitter.image" -}}
+{{- define "open-vault-agent-injector.injectconfig.jobbabysitter.image" -}}
 {{- printf "%s%s:%s" (default "" .imageRegistry) .injectconfig.jobbabysitter.image.path (default "latest" .injectconfig.jobbabysitter.image.tag) -}}
 {{- end -}}
 
 {{/*
-Define the docker image for Vault sidecar container (image.path:image.tag).
+Define the docker image for Vault Agent container (image.path:image.tag).
 */}}
-{{- define "talend-vault-sidecar-injector.injectconfig.vault.image" -}}
+{{- define "open-vault-agent-injector.injectconfig.vault.image" -}}
 {{- printf "%s%s:%s" (default "" .imageRegistry) .injectconfig.vault.image.path (default "latest" .injectconfig.vault.image.tag) -}}
 {{- end -}}
 
@@ -91,7 +91,7 @@ Define the docker image for Vault sidecar container (image.path:image.tag).
 Returns the service name which is by default fixed (not depending on release).
 It can be prefixed by the release if the service.prefixWithHelmRelease is true
 */}}
-{{- define "talend-vault-sidecar-injector.service.name" -}}
+{{- define "open-vault-agent-injector.service.name" -}}
 {{- if eq .Values.service.prefixWithHelmRelease true -}}
     {{- $name := .Values.service.name | trunc 63 | trimSuffix "-" -}}
     {{- printf "%s-%s" .Release.Name $name -}}
@@ -103,7 +103,7 @@ It can be prefixed by the release if the service.prefixWithHelmRelease is true
 {{/*
 Add Vault flag to skip verification of TLS certificates
 */}}
-{{- define "talend-vault-sidecar-injector.vault.cert.skip.verify" -}}
+{{- define "open-vault-agent-injector.vault.cert.skip.verify" -}}
 {{- if eq .vault.ssl.verify false -}}
 -tls-skip-verify
 {{- end -}}
