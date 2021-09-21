@@ -7,16 +7,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test
-      com.talend.service: test-app-svc
+      com.ovai.application: test
+      com.ovai.service: test-app-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/auth: "approle"
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/auth: "approle"
       labels:
-        com.talend.application: test
-        com.talend.service: test-app-svc
+        com.ovai.application: test
+        com.ovai.service: test-app-svc
     spec:
       serviceAccountName: default
       initContainers:
@@ -26,8 +26,8 @@ spec:
             - "sh"
             - "-c"
             - |
-              echo "d65ef3ef-4cb3-74f1-2e9c-b069b6d21e21" > /opt/talend/secrets/approle_roleid
-              echo "840e8694-e7dc-282c-eef8-523e828eacfc" > /opt/talend/secrets/approle_secretid
+              echo "d65ef3ef-4cb3-74f1-2e9c-b069b6d21e21" > /opt/ovai/secrets/approle_roleid
+              echo "840e8694-e7dc-282c-eef8-523e828eacfc" > /opt/ovai/secrets/approle_secretid
       containers:
         - name: test-app-approle
           image: busybox:1.28
@@ -35,4 +35,4 @@ spec:
             - "sh"
             - "-c"
             - >
-              while true;do echo "My secrets are: $(cat /opt/talend/secrets/secrets.properties)"; sleep 5; done
+              while true;do echo "My secrets are: $(cat /opt/ovai/secrets/secrets.properties)"; sleep 5; done

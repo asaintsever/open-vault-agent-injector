@@ -7,17 +7,17 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test
-      com.talend.service: test-app-svc
+      com.ovai.application: test
+      com.ovai.service: test-app-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-injection-method: "envvars"  # 'env' or 'file'
-        sidecar.vault.talend.org/secrets-type: "static" # env vars injection only support static secrets (no annotation or set to 'dynamic' will raise an error)
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-injection-method: "envvars"  # 'env' or 'file'
+        ovai.asaintsever.org/secrets-type: "static" # env vars injection only support static secrets (no annotation or set to 'dynamic' will raise an error)
       labels:
-        com.talend.application: test
-        com.talend.service: test-app-svc
+        com.ovai.application: test
+        com.ovai.service: test-app-svc
     spec:
       serviceAccountName: default
       containers:

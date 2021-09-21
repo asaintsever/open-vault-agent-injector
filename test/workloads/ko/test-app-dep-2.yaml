@@ -7,16 +7,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test
-      com.talend.service: test-app-svc
+      com.ovai.application: test
+      com.ovai.service: test-app-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-type: "kubernetes" # unsupported secrets type
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-type: "kubernetes" # unsupported secrets type
       labels:
-        com.talend.application: test
-        com.talend.service: test-app-svc
+        com.ovai.application: test
+        com.ovai.service: test-app-svc
     spec:
       serviceAccountName: default
       containers:
@@ -26,10 +26,10 @@ spec:
             - "sh"
             - "-c"
             - >
-              echo "My secrets are: $(cat /opt/talend/secrets/secrets.properties)"
+              echo "My secrets are: $(cat /opt/ovai/secrets/secrets.properties)"
           volumeMounts:
             - name: secrets
-              mountPath: /opt/talend/secrets
+              mountPath: /opt/ovai/secrets
       volumes:
         - name: secrets
           emptyDir:

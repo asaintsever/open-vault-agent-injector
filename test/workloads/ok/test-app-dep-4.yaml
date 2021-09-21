@@ -7,21 +7,21 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test4
-      com.talend.service: test-app4-svc
+      com.ovai.application: test4
+      com.ovai.service: test-app4-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/role: "test"
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/role: "test"
         # This is the default template so no need to use 'secrets-template' annotation (only for regression testing here)
-        sidecar.vault.talend.org/secrets-template: |
+        ovai.asaintsever.org/secrets-template: |
           {{ with secret "secret/test/test-app-svc" }}{{ range \$k, \$v := .Data }}
           {{ \$k }}={{ \$v }}
           {{ end }}{{ end }}
       labels:
-        com.talend.application: test4
-        com.talend.service: test-app4-svc
+        com.ovai.application: test4
+        com.ovai.service: test-app4-svc
     spec:
       serviceAccountName: default
       containers:
@@ -31,4 +31,4 @@ spec:
             - "sh"
             - "-c"
             - >
-              while true;do echo "My secrets are: $(cat /opt/talend/secrets/secrets.properties)"; sleep 5; done
+              while true;do echo "My secrets are: $(cat /opt/ovai/secrets/secrets.properties)"; sleep 5; done

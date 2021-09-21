@@ -7,15 +7,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test2
-      com.talend.service: test-app2-svc
+      com.ovai.application: test2
+      com.ovai.service: test-app2-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-destination: "secrets.properties,secrets2.properties"
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-destination: "secrets.properties,secrets2.properties"
         # Test several templates
-        sidecar.vault.talend.org/secrets-template: |
+        ovai.asaintsever.org/secrets-template: |
           {{ with secret "secret/test2/test-app2-svc" }}
           {{ if .Data.SECRET1 }}
           bob={{ .Data.SECRET1 }}
@@ -33,8 +33,8 @@ spec:
           {{ \$k }}:{{ \$v }}
           {{ end }}{{ end }}
       labels:
-        com.talend.application: test2
-        com.talend.service: test-app2-svc
+        com.ovai.application: test2
+        com.ovai.service: test-app2-svc
     spec:
       serviceAccountName: default
       containers:
@@ -44,30 +44,30 @@ spec:
             - "sh"
             - "-c"
             - >
-              while true;do echo "My secrets are: $(cat /opt/talend/secrets/secrets.properties)"; sleep 5; done
+              while true;do echo "My secrets are: $(cat /opt/ovai/secrets/secrets.properties)"; sleep 5; done
           volumeMounts:
             - name: secrets
-              mountPath: /opt/talend/secrets
+              mountPath: /opt/ovai/secrets
         - name: test-app-num-secrets-tmpl-dest-2
           image: busybox:1.28
           command:
             - "sh"
             - "-c"
             - >
-              while true;do echo "My secrets 2 are: $(cat /opt/talend/secrets/secrets2.properties)"; sleep 5; done
+              while true;do echo "My secrets 2 are: $(cat /opt/ovai/secrets/secrets2.properties)"; sleep 5; done
           volumeMounts:
             - name: secrets
-              mountPath: /opt/talend/secrets
+              mountPath: /opt/ovai/secrets
         - name: test-app-num-secrets-tmpl-dest-3
           image: busybox:1.28
           command:
             - "sh"
             - "-c"
             - >
-              while true;do echo "My secrets 3 are: $(cat /opt/talend/secrets/secrets3.properties)"; sleep 5; done
+              while true;do echo "My secrets 3 are: $(cat /opt/ovai/secrets/secrets3.properties)"; sleep 5; done
           volumeMounts:
             - name: secrets
-              mountPath: /opt/talend/secrets
+              mountPath: /opt/ovai/secrets
       volumes:
         - name: secrets
           emptyDir:

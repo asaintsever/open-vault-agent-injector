@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "talend-vault-sidecar-injector.fullname" . }}
+  name: {{ include "open-vault-agent-injector.fullname" . }}
   labels:
-{{ include "talend-vault-sidecar-injector.labels" . | indent 4 }}
+{{ include "open-vault-agent-injector.labels" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount | int }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | int }}
   selector:
     matchLabels:
-      com.talend.application: {{ .Values.image.applicationNameLabel }}
-      com.talend.service: {{ .Values.image.serviceNameLabel }}
+      com.ovai.application: {{ .Values.image.applicationNameLabel }}
+      com.ovai.service: {{ .Values.image.serviceNameLabel }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        com.talend.application: {{ .Values.image.applicationNameLabel }}
-        com.talend.service: {{ .Values.image.serviceNameLabel }}
+        com.ovai.application: {{ .Values.image.applicationNameLabel }}
+        com.ovai.service: {{ .Values.image.serviceNameLabel }}
         release: {{ .Release.Name }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
@@ -25,27 +25,27 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.registryKey }}
       {{- end }}
-      serviceAccountName: talend-vault-sidecar-injector
+      serviceAccountName: open-vault-agent-injector
       containers:
-        - name: {{ include "talend-vault-sidecar-injector.fullname" . }}
-          image: {{ include "talend-vault-sidecar-injector.image" .Values }}
+        - name: {{ include "open-vault-agent-injector.fullname" . }}
+          image: {{ include "open-vault-agent-injector.image" .Values }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - webhook
             - -port={{ .Values.image.port }}
             - -metricsport={{ .Values.image.metricsPort }}
-            - -cacertfile=/opt/talend/webhook/certs/{{ .Values.mutatingwebhook.cert.cacertfile }}
-            - -certfile=/opt/talend/webhook/certs/{{ .Values.mutatingwebhook.cert.certfile }}
-            - -keyfile=/opt/talend/webhook/certs/{{ .Values.mutatingwebhook.cert.keyfile }}
-            - -webhookcfgname={{ include "talend-vault-sidecar-injector.fullname" . }}
+            - -cacertfile=/opt/ovai/webhook/certs/{{ .Values.mutatingwebhook.cert.cacertfile }}
+            - -certfile=/opt/ovai/webhook/certs/{{ .Values.mutatingwebhook.cert.certfile }}
+            - -keyfile=/opt/ovai/webhook/certs/{{ .Values.mutatingwebhook.cert.keyfile }}
+            - -webhookcfgname={{ include "open-vault-agent-injector.fullname" . }}
             - -annotationkeyprefix={{ .Values.mutatingwebhook.annotations.keyPrefix }}
             - -applabelkey={{ .Values.mutatingwebhook.annotations.appLabelKey }}
             - -appservicelabelkey={{ .Values.mutatingwebhook.annotations.appServiceLabelKey }}
-            - -injectioncfgfile=/opt/talend/webhook/config/injectionconfig.yaml
-            - -proxycfgfile=/opt/talend/webhook/config/proxyconfig.hcl
-            - -tmplblockfile=/opt/talend/webhook/config/templateblock.hcl
-            - -tmpldefaultfile=/opt/talend/webhook/config/templatedefault.tmpl
-            - -podlchooksfile=/opt/talend/webhook/config/podlifecyclehooks.yaml
+            - -injectioncfgfile=/opt/ovai/webhook/config/injectionconfig.yaml
+            - -proxycfgfile=/opt/ovai/webhook/config/proxyconfig.hcl
+            - -tmplblockfile=/opt/ovai/webhook/config/templateblock.hcl
+            - -tmpldefaultfile=/opt/ovai/webhook/config/templatedefault.tmpl
+            - -podlchooksfile=/opt/ovai/webhook/config/podlifecyclehooks.yaml
             - -logtostderr
             - -stderrthreshold=0
             - -v={{ .Values.mutatingwebhook.loglevel }}
@@ -80,10 +80,10 @@ spec:
             failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
           volumeMounts:
             - name: webhook-certs
-              mountPath: /opt/talend/webhook/certs
+              mountPath: /opt/ovai/webhook/certs
               readOnly: true
             - name: webhook-config
-              mountPath: /opt/talend/webhook/config
+              mountPath: /opt/ovai/webhook/config
           {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -99,4 +99,4 @@ spec:
             secretName: {{ .Values.mutatingwebhook.cert.secretName }}
         - name: webhook-config
           configMap:
-            name: {{ include "talend-vault-sidecar-injector.fullname" . }}
+            name: {{ include "open-vault-agent-injector.fullname" . }}

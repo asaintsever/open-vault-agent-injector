@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,7 +13,7 @@
 package webhook
 
 import (
-	_ "talend/vault-sidecar-injector/pkg/mode/job"     // blank import to init job mode (registration)
-	_ "talend/vault-sidecar-injector/pkg/mode/proxy"   // blank import to init proxy mode (registration)
-	_ "talend/vault-sidecar-injector/pkg/mode/secrets" // blank import to init secrets mode (registration)
+	_ "asaintsever/open-vault-agent-injector/pkg/mode/job"     // blank import to init job mode (registration)
+	_ "asaintsever/open-vault-agent-injector/pkg/mode/proxy"   // blank import to init proxy mode (registration)
+	_ "asaintsever/open-vault-agent-injector/pkg/mode/secrets" // blank import to init secrets mode (registration)
 )

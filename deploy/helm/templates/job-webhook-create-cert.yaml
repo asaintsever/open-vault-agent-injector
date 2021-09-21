@@ -2,23 +2,23 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ include "talend-vault-sidecar-injector.fullname" . }}-cert"
+  name: "{{ include "open-vault-agent-injector.fullname" . }}-cert"
   labels:
-{{ include "talend-vault-sidecar-injector.labels" . | indent 4 }}
+{{ include "open-vault-agent-injector.labels" . | indent 4 }}
 spec:
   template:
     metadata:
-      name: "{{ include "talend-vault-sidecar-injector.fullname" . }}-cert"
+      name: "{{ include "open-vault-agent-injector.fullname" . }}-cert"
     spec:
       restartPolicy: Never
       {{- if .Values.registryKey }}
       imagePullSecrets:
         - name: {{ .Values.registryKey }}
       {{- end }}
-      serviceAccountName: talend-vault-sidecar-injector
+      serviceAccountName: open-vault-agent-injector
       containers:
-      - name: {{ include "talend-vault-sidecar-injector.fullname" . }}
-        image: {{ include "talend-vault-sidecar-injector.image" .Values }}
+      - name: {{ include "open-vault-agent-injector.fullname" . }}
+        image: {{ include "open-vault-agent-injector.image" .Values }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
           - name: POD_NAMESPACE
@@ -29,7 +29,7 @@ spec:
           - cert
           - -certop=create
           - -certsecretname={{ .Values.mutatingwebhook.cert.secretName }}
-          - -certhostnames={{ include "talend-vault-sidecar-injector.service.name" . }},{{ include "talend-vault-sidecar-injector.service.name" . }}.{{ .Release.Namespace }},{{ include "talend-vault-sidecar-injector.service.name" . }}.{{ .Release.Namespace }}.svc
+          - -certhostnames={{ include "open-vault-agent-injector.service.name" . }},{{ include "open-vault-agent-injector.service.name" . }}.{{ .Release.Namespace }},{{ include "open-vault-agent-injector.service.name" . }}.{{ .Release.Namespace }}.svc
           - -certlifetime={{ .Values.mutatingwebhook.cert.certlifetime }}
           - -cacertfile={{ .Values.mutatingwebhook.cert.cacertfile }}
           - -certfile={{ .Values.mutatingwebhook.cert.certfile }}

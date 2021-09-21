@@ -8,11 +8,11 @@ spec:
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/mode: "job"
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/mode: "job"
       labels:
-        com.talend.application: test
-        com.talend.service: test-app-svc
+        com.ovai.application: test
+        com.ovai.service: test-app-svc
     spec:
       restartPolicy: Never
       # custom serviceAccountName with role allowing to perform GET on pods (needed to poll for job's pod status)
@@ -27,7 +27,7 @@ spec:
               set -e
               while true; do
                 echo "Wait for secrets file before running job..."
-                if [ -f "/opt/talend/secrets/secrets.properties" ]; then
+                if [ -f "/opt/ovai/secrets/secrets.properties" ]; then
                   echo "Secrets available"
                   break
                 fi
@@ -35,23 +35,23 @@ spec:
               done
               echo "Job started"
               echo "I am a job... still working - 1"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               sleep 5
               echo "I am a job... still working - 2"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               sleep 5
               echo "I am a job... still working - 3"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               sleep 5
               echo "I am a job... still working - 4"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               sleep 5
               echo "I am a job... still working - 5"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               echo "Job stopped"
           volumeMounts:
             - name: secrets
-              mountPath: /opt/talend/secrets
+              mountPath: /opt/ovai/secrets
         - name: test-app-job-more-than-one-container-2
           image: busybox:1.28
           command:
@@ -61,7 +61,7 @@ spec:
               set -e
               while true; do
                 echo "Wait for secrets file before running job..."
-                if [ -f "/opt/talend/secrets/secrets.properties" ]; then
+                if [ -f "/opt/ovai/secrets/secrets.properties" ]; then
                   echo "Secrets available"
                   break
                 fi
@@ -69,23 +69,23 @@ spec:
               done
               echo "Job started"
               echo "I am a job... still working - 1"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               sleep 5
               echo "I am a job... still working - 2"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               sleep 5
               echo "I am a job... still working - 3"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               sleep 5
               echo "I am a job... still working - 4"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               sleep 5
               echo "I am a job... still working - 5"
-              cat /opt/talend/secrets/secrets.properties
+              cat /opt/ovai/secrets/secrets.properties
               echo "Job stopped"
           volumeMounts:
             - name: secrets
-              mountPath: /opt/talend/secrets
+              mountPath: /opt/ovai/secrets
       volumes:
         - name: secrets
           emptyDir:

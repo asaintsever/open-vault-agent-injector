@@ -1,17 +1,17 @@
-# How to deploy Vault Sidecar Injector
+# How to deploy Open Vault Agent Injector
 
-- [How to deploy Vault Sidecar Injector](#how-to-deploy-vault-sidecar-injector)
+- [How to deploy Open Vault Agent Injector](#how-to-deploy-open-vault-agent-injector)
   - [Prerequisites](#prerequisites)
-  - [Vault Sidecar Injector image](#vault-sidecar-injector-image)
+  - [Open Vault Agent Injector image](#open-vault-agent-injector-image)
   - [Webhook certificates](#webhook-certificates)
   - [Installing the Chart](#installing-the-chart)
   - [Uninstalling the chart](#uninstalling-the-chart)
 
-`Vault Sidecar Injector` consists in a *Webhook Admission Server*, registered in the Kubernetes [Mutating Admission Webhook Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#admission-webhooks), that will mutate resources depending on defined criteriae.
+`Open Vault Agent Injector` consists in a *Webhook Admission Server*, registered in the Kubernetes [Mutating Admission Webhook Controller](https://kubernetes.io/docs/reference/access-authn-authz/extensible-admission-controllers/#admission-webhooks), that will mutate resources depending on defined criteriae.
 
 ## Prerequisites
 
-> *Note: Vault Sidecar Injector chart version > `4.0.0` requires Helm 3. Helm 2 is no more supported.*
+> *Note: Open Vault Agent Injector chart requires Helm 3*
 
 Installation:
 
@@ -48,12 +48,12 @@ kubectl exec -it vault-0 -- vault status
 kubectl logs vault-0
 
 # Set up needed auth methods, secrets engines, policies, roles and secrets
-cd vault-sidecar-injector/test/vault
+cd open-vault-agent-injector/test/vault
 ./init-test-vault-server.sh
 ```
 </details>
 
-## Vault Sidecar Injector image
+## Open Vault Agent Injector image
 
 > Note: if you don't intend to perform some tests with the image you can skip this section.
 
@@ -62,12 +62,12 @@ cd vault-sidecar-injector/test/vault
 <b>Pulling the image from Docker Hub</b>
 </summary>
 
-Official Docker images are published on [Talend's public Docker Hub](https://hub.docker.com/r/talend/vault-sidecar-injector) repository for each `Vault Sidecar Injector` release. Provided Helm chart will pull the image automatically if needed.  
+Official Docker images are published on [Docker Hub](https://hub.docker.com/r/asaintsever/open-vault-agent-injector) for each `Open Vault Agent Injector` release. Provided Helm chart will pull the image automatically if needed.  
 
 For manual pull of a specific tag:
 
 ```bash
-docker pull talend/vault-sidecar-injector:<tag>
+docker pull asaintsever/open-vault-agent-injector:<tag>
 ```
 </details>
 
@@ -76,7 +76,7 @@ docker pull talend/vault-sidecar-injector:<tag>
 <b>Building the image</b>
 </summary>
 
-A [Dockerfile](../Dockerfile) is also provided to both compile `Vault Sidecar Injector` and build the image locally if you prefer.
+A [Dockerfile](../Dockerfile) is also provided to both compile `Open Vault Agent Injector` and build the image locally if you prefer.
 
 Just run following command:
 
@@ -104,36 +104,27 @@ You can also provide your own certificates and private key by following those st
                   --from-file=ca.crt=<PATH>/<CA file, PEM-encoded> \
                   --from-file=tls.crt=<PATH>/<Cert file, PEM-encoded> \
                   --from-file=tls.key=<PATH>/<PrivKey file, PEM-encoded>
-                  -n <Namespace where Vault Sidecar Injector is installed>
+                  -n <Namespace where Open Vault Agent Injector is installed>
   ```
 
 ## Installing the Chart
 
 Several options to install the chart:
 
-- from [Artifact Hub](https://artifacthub.io/packages/helm/talend/vault-sidecar-injector) leveraging [Talend's public Helm charts registry](https://talend.github.io/helm-charts-public)
-- by downloading the chart archive (`.tgz` file) from GitHub [releases](https://github.com/Talend/vault-sidecar-injector/releases)
-- or cloning `Vault Sidecar Injector` GitHub repo and cd into `deploy/helm` directory
+- by downloading the chart archive (`.tgz` file) from GitHub [releases](https://github.com/asaintsever/open-vault-agent-injector/releases)
+- or cloning `Open Vault Agent Injector` GitHub repo and cd into `deploy/helm` directory
 
 Depending on what you chose, define a `CHART_LOCATION` env var as follows:
-
-- if you use [Artifact Hub](https://artifacthub.io/packages/helm/talend/vault-sidecar-injector) / [Talend's public Helm charts registry](https://talend.github.io/helm-charts-public):
-
-```bash
-helm repo add talend https://talend.github.io/helm-charts-public/stable
-helm repo update
-export CHART_LOCATION=talend/vault-sidecar-injector
-```
 
 - if you use the downloaded chart archive:
 
 ```bash
-export CHART_LOCATION=./vault-sidecar-injector-<x.y.z>.tgz
+export CHART_LOCATION=./open-vault-agent-injector-<x.y.z>.tgz
 ```
 
 - if you install from the chart's folder:
 
-> *Note: you previously need to build the image to use this install option, refer to "Building the image" in [Vault Sidecar Injector image](#vault-sidecar-injector-image)*
+> *Note: you previously need to build the image to use this install option, refer to "Building the image" in [Open Vault Agent Injector image](#open-vault-agent-injector-image)*
 
 ```bash
 cd deploy/helm
@@ -143,23 +134,23 @@ export CHART_LOCATION=$(pwd)
 To see Chart content before installing it, perform a dry run first:
 
 ```bash
-helm install vault-sidecar-injector $CHART_LOCATION --namespace <namespace for deployment> --set vault.addr=<Vault server address> --debug --dry-run
+helm install ovai $CHART_LOCATION --namespace <namespace for deployment> --set vault.addr=<Vault server address> --debug --dry-run
 ```
 
 To install the chart on the cluster:
 
 ```bash
-helm install vault-sidecar-injector $CHART_LOCATION --namespace <namespace for deployment> --set vault.addr=<Vault server address>
+helm install ovai $CHART_LOCATION --namespace <namespace for deployment> --set vault.addr=<Vault server address>
 ```
 
-> **Note:** `Vault Sidecar Injector` should be deployed only once (except for testing purpose, see below). It will mutate any "vault-sidecar annotated" pod from any namespace. **It *shall not* be deployed in every namespaces**.
+> **Note:** `Open Vault Agent Injector` should be deployed only once (except for testing purpose, see below). It will mutate any "OVAI annotated" pod from any namespace. **It *shall not* be deployed in every namespaces**.
 
->**Note**: it is possible to deploy an instance in a given namespace **and to restrict injection to this same namespace** if necessary, **in particular in a dev environment where each team wants its own instance of `Vault Sidecar Injector` for testing purpose** with its dedicated configuration (including a dedicated Vault server). Refer to `Installing the chart in a dev environment` section below.
+>**Note**: it is possible to deploy an instance in a given namespace **and to restrict injection to this same namespace** if necessary, **in particular in a dev environment where each team wants its own instance of `Open Vault Agent Injector` for testing purpose** with its dedicated configuration (including a dedicated Vault server). Refer to `Installing the chart in a dev environment` section below.
 
-As an example, to install `Vault Sidecar Injector` on our test cluster:
+As an example, to install `Open Vault Agent Injector` on our test cluster:
 
 ```bash
-helm install vault-sidecar-injector $CHART_LOCATION --namespace kube-system --set vault.addr=http://vault:8200 --set vault.ssl.verify=false
+helm install ovai $CHART_LOCATION --namespace kube-system --set vault.addr=http://vault:8200 --set vault.ssl.verify=false
 ```
 
 This command deploys the component on the Kubernetes cluster with modified configuration to target our Vault server in-cluster test instance (no verification of certificates): such settings *are no fit for production*.
@@ -171,10 +162,10 @@ The [configuration](Configuration.md) section lists all the parameters that can 
 <b>Installing the chart in a dev environment</b>
 </summary>
 
-In a dev environment, you may want to install your own test instance of `Vault Sidecar Injector`, connected to your own Vault server and limiting injection to a given namespace. To do so, use following options:
+In a dev environment, you may want to install your own test instance of `Open Vault Agent Injector`, connected to your own Vault server and limiting injection to a given namespace. To do so, use following options:
 
 ```bash
-helm install vault-sidecar-injector $CHART_LOCATION --namespace <your dev namespace> --set vault.addr=<your dev Vault server address> --set mutatingwebhook.namespaceSelector.namespaced=true
+helm install ovai $CHART_LOCATION --namespace <your dev namespace> --set vault.addr=<your dev Vault server address> --set mutatingwebhook.namespaceSelector.namespaced=true
 ```
 
 And then **add a label on your namespace** as follows (if not done, no injection will be performed):
@@ -192,12 +183,12 @@ kubectl get namespace -L vault-injection
 <b>Restrict injection to specific namespaces</b>
 </summary>
 
-By default `Vault Sidecar Injector` monitors all namespaces (except `kube-system` and `kube-public`) and looks after annotations in submitted pods.
+By default `Open Vault Agent Injector` monitors all namespaces (except `kube-system` and `kube-public`) and looks after annotations in submitted pods.
 
 If you want to strictly control the list of namespaces where injection is allowed, set value `mutatingwebhook.namespaceSelector.boolean=true` when installing the chart as follows:
 
 ```bash
-helm install vault-sidecar-injector $CHART_LOCATION --namespace <namespace for deployment> --set vault.addr=<Vault server address> --set mutatingwebhook.namespaceSelector.boolean=true
+helm install ovai $CHART_LOCATION --namespace <namespace for deployment> --set vault.addr=<Vault server address> --set mutatingwebhook.namespaceSelector.boolean=true
 ```
 
 Then apply label `vault-injection=enabled` on **all** required namespaces:
@@ -212,10 +203,10 @@ kubectl get namespace -L vault-injection
 
 ## Uninstalling the chart
 
-To uninstall/delete the `Vault Sidecar Injector` deployment:
+To uninstall/delete the `Open Vault Agent Injector` deployment:
 
 ```bash
-helm delete vault-sidecar-injector -n <namespace for deployment>
+helm delete ovai -n <namespace for deployment>
 ```
 
 This command removes all the Kubernetes resources associated with the chart and deletes the Helm release.

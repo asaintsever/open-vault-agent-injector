@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -22,8 +20,8 @@ import (
 	"k8s.io/klog"
 )
 
-// Load : Load Vault Sidecar Injector's config
-func Load(whSvrParams WhSvrParameters) (*VSIConfig, error) {
+// Load : Load Open Vault Agent Injector's config
+func Load(whSvrParams WhSvrParameters) (*OVAIConfig, error) {
 	klog.Infof("annotationKeyPrefix=%s", whSvrParams.AnnotationKeyPrefix)
 	klog.Infof("appLabelKey=%s", whSvrParams.AppLabelKey)
 	klog.Infof("appServiceLabelKey=%s", whSvrParams.AppServiceLabelKey)
@@ -65,7 +63,7 @@ func Load(whSvrParams WhSvrParameters) (*VSIConfig, error) {
 		return nil, err
 	}
 
-	return &VSIConfig{
+	return &OVAIConfig{
 		VaultInjectorAnnotationKeyPrefix: whSvrParams.AnnotationKeyPrefix,
 		ApplicationLabelKey:              whSvrParams.AppLabelKey,
 		ApplicationServiceLabelKey:       whSvrParams.AppServiceLabelKey,

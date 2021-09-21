@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,10 +13,10 @@
 package job
 
 import (
+	ctx "asaintsever/open-vault-agent-injector/pkg/context"
+	m "asaintsever/open-vault-agent-injector/pkg/mode"
+	"asaintsever/open-vault-agent-injector/pkg/mode/secrets"
 	"errors"
-	ctx "talend/vault-sidecar-injector/pkg/context"
-	m "talend/vault-sidecar-injector/pkg/mode"
-	"talend/vault-sidecar-injector/pkg/mode/secrets"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/klog"

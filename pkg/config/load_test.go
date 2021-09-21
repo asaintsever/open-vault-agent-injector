@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -23,9 +21,9 @@ import (
 )
 
 const (
-	proxyCfgFileResolved    = "cache {\n    use_auto_auth_token = true\n}\n\nlistener \"tcp\" {\n    address = \"127.0.0.1:<VSI_PROXY_PORT>\"\n    tls_disable = true\n}"
-	templateBlockResolved   = "template {\n    destination = \"/opt/talend/secrets/<VSI_SECRETS_DESTINATION>\"\n    contents = <<EOH\n    <VSI_SECRETS_TEMPLATE_CONTENT>\n    EOH\n    command = \"<VSI_SECRETS_TEMPLATE_COMMAND_TO_RUN>\"\n    wait {\n    min = \"1s\"\n    max = \"2s\"\n    }\n}"
-	templateDefaultResolved = "{{ with secret \"<VSI_SECRETS_VAULT_SECRETS_PATH>\" }}{{ range $k, $v := .Data }}\n{{ $k }}={{ $v }}\n{{ end }}{{ end }}"
+	proxyCfgFileResolved    = "cache {\n    use_auto_auth_token = true\n}\n\nlistener \"tcp\" {\n    address = \"127.0.0.1:<OVAI_PROXY_PORT>\"\n    tls_disable = true\n}"
+	templateBlockResolved   = "template {\n    destination = \"/opt/ovai/secrets/<OVAI_SECRETS_DESTINATION>\"\n    contents = <<EOH\n    <OVAI_SECRETS_TEMPLATE_CONTENT>\n    EOH\n    command = \"<OVAI_SECRETS_TEMPLATE_COMMAND_TO_RUN>\"\n    wait {\n    min = \"1s\"\n    max = \"2s\"\n    }\n}"
+	templateDefaultResolved = "{{ with secret \"<OVAI_SECRETS_VAULT_SECRETS_PATH>\" }}{{ range $k, $v := .Data }}\n{{ $k }}={{ $v }}\n{{ end }}{{ end }}"
 )
 
 type inputLoaded struct {
@@ -68,7 +66,7 @@ func TestLoadConfig(t *testing.T) {
 	}
 
 	for _, table := range tables {
-		vsiCfg, err := Load(
+		ovaiCfg, err := Load(
 			WhSvrParameters{
 				Port: 0, MetricsPort: 0,
 				CACertFile: "", CertFile: "", KeyFile: "",
@@ -86,13 +84,13 @@ func TestLoadConfig(t *testing.T) {
 		}
 
 		// Verify strings
-		assert.Equal(t, table.proxyCfgFileResolved, vsiCfg.ProxyConfig)
-		assert.Equal(t, table.templateBlockResolved, vsiCfg.TemplateBlock)
-		assert.Equal(t, table.templateDefaultResolved, vsiCfg.TemplateDefaultTmpl)
+		assert.Equal(t, table.proxyCfgFileResolved, ovaiCfg.ProxyConfig)
+		assert.Equal(t, table.templateBlockResolved, ovaiCfg.TemplateBlock)
+		assert.Equal(t, table.templateDefaultResolved, ovaiCfg.TemplateDefaultTmpl)
 
 		// Verify yaml by marshalling the object into yaml again
-		assert.Equal(t, stringFromYamlFile(t, table.injectionCfgFileResolved), stringFromYamlObj(t, vsiCfg.InjectionConfig))
-		assert.Equal(t, stringFromYamlFile(t, table.podLifecycleHooksFileResolved), stringFromYamlObj(t, vsiCfg.PodslifecycleHooks))
+		assert.Equal(t, stringFromYamlFile(t, table.injectionCfgFileResolved), stringFromYamlObj(t, ovaiCfg.InjectionConfig))
+		assert.Equal(t, stringFromYamlFile(t, table.podLifecycleHooksFileResolved), stringFromYamlObj(t, ovaiCfg.PodslifecycleHooks))
 	}
 }
 

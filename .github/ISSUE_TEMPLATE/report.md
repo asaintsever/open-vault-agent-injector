@@ -1,6 +1,6 @@
 ---
 name: Report
-about: Report Vault Sidecar Injector issue
+about: Report Open Vault Agent Injector issue
 title: ''
 labels: ''
 assignees: asaintsever
@@ -32,7 +32,7 @@ If applicable, add screenshots to help explain your problem.
     - version
     - chart version (if Kubernetes install)
     - in-cluster or external instance
- - Vault Sidecar Injector
+ - Open Vault Agent Injector
     - chart version: [e.g. 3.1.1]
 
 **Additional context**
@@ -41,15 +41,15 @@ Add any other context about the problem here.
 
 **Content of deployed Kubernetes manifest**
 
-If possible, full content of your manifest with Vault Sidecar Injector annotations and info about your workload such as image path, command, env, volumes & mounts ...
+If possible, full content of your manifest with Open Vault Agent Injector annotations and info about your workload such as image path, command, env, volumes & mounts ...
 
 **Log of Vault Server**
 
 Warnings and errors related to the issue
 
-**Logs of Vault Sidecar Injector pod(s)**
+**Logs of Open Vault Agent Injector pod(s)**
 
-Errors reported by Vault Sidecar Injector while trying to inject Vault Agent into your workload
+Errors reported by Open Vault Agent Injector while trying to inject Vault Agent into your workload
 
 **Logs of your workload**
 

@@ -1,17 +1,14 @@
 apiVersion: v2
-name: vault-sidecar-injector
-description: A Helm chart for Talend Vault Sidecar Injector (OSS)
+name: open-vault-agent-injector
+description: A Helm chart for Open Vault Agent Injector (OVAI)
 version: 0.0.0
-icon: https://www.talend.com/favicon-196x196.png
 keywords:
-   - Talend
+   - secret
+   - webhook
    - vault
-   - sidecar
-   - vault-sidecar-injector
-home: https://www.talend.com/products/
+   - vault-agent
+   - vault-agent-injector
+home: https://github.com/asaintsever/open-vault-agent-injector
 sources:
-   - https://github.com/Talend/vault-sidecar-injector
-maintainers:
-   - name: Talend
-     email: support@talend.com
+   - https://github.com/asaintsever/open-vault-agent-injector
 appVersion: 0.0.0

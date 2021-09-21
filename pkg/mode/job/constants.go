@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,7 +12,7 @@
 
 package job
 
-import "talend/vault-sidecar-injector/pkg/config"
+import "asaintsever/open-vault-agent-injector/pkg/config"
 
 const (
 	//--- Job handling - Temporary mechanism until KEP https://github.com/kubernetes/enhancements/blob/master/keps/sig-apps/sidecarcontainers.md is implemented (and we migrate on appropriate version of k8s)
@@ -22,6 +20,6 @@ const (
 	jobListenerContainerName   = config.VaultAgentContainerName    // Name of the container listening for signal from job monitoring container
 
 	//--- Job handling env vars
-	jobContainerNameEnv = "VSI_JOB_CNT_NAME" // Env var for name of the app job's container
-	jobWorkloadEnv      = "VSI_JOB_WORKLOAD" // Env var set to "true" if submitted workload is a k8s job
+	jobContainerNameEnv = "OVAI_JOB_CNT_NAME" // Env var for name of the app job's container
+	jobWorkloadEnv      = "OVAI_JOB_WORKLOAD" // Env var set to "true" if submitted workload is a k8s job
 )

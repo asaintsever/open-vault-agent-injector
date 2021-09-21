@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,7 +13,7 @@
 package mode
 
 const (
-	//--- Vault Sidecar Injector supported modes
+	//--- Open Vault Agent Injector supported modes
 	VaultInjectorModeSecrets = "secrets" // Enable fetching of secrets from Vault store
 	VaultInjectorModeProxy   = "proxy"   // Enable local Vault proxy
 	VaultInjectorModeJob     = "job"     // Enable handling of Kubernetes Job

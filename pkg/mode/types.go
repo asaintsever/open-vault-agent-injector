@@ -1,5 +1,3 @@
-// Copyright © 2019-2020 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,8 +13,8 @@
 package mode
 
 import (
-	cfg "talend/vault-sidecar-injector/pkg/config"
-	ctx "talend/vault-sidecar-injector/pkg/context"
+	cfg "asaintsever/open-vault-agent-injector/pkg/config"
+	ctx "asaintsever/open-vault-agent-injector/pkg/context"
 
 	corev1 "k8s.io/api/core/v1"
 )
@@ -31,11 +29,11 @@ type VaultInjectorModeInfo struct {
 	EnableDefaultMode    bool     // should we also enable the default mode when this mode is the only one being requested?
 	Annotations          []string // mode's annotations
 	ComputeTemplatesFunc func(
-		config *cfg.VSIConfig,
+		config *cfg.OVAIConfig,
 		labels,
 		annotations map[string]string) (ctx.ModeConfig, error) // to compute templates used in injected container(s)
 	PatchPodFunc func(
-		config *cfg.VSIConfig,
+		config *cfg.OVAIConfig,
 		podSpec corev1.PodSpec,
 		annotations map[string]string,
 		context *ctx.InjectionContext) (patch []ctx.PatchOperation, err error) // to patch submitted pod's container(s)

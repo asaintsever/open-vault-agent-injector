@@ -1,14 +1,14 @@
 apiVersion: {{ include "mutatingwebhookconfiguration.apiversion" . }}
 kind: MutatingWebhookConfiguration
 metadata:
-  name: {{ include "talend-vault-sidecar-injector.fullname" . }}
+  name: {{ include "open-vault-agent-injector.fullname" . }}
   labels:
-{{ include "talend-vault-sidecar-injector.labels" . | indent 4 }}
+{{ include "open-vault-agent-injector.labels" . | indent 4 }}
 webhooks:
-  - name: vault-sidecar-injector.talend.org
+  - name: open-vault-agent-injector.asaintsever.org
     clientConfig:
       service:
-        name: {{ include "talend-vault-sidecar-injector.service.name" . }}
+        name: {{ include "open-vault-agent-injector.service.name" . }}
         namespace: {{ .Release.Namespace }}
         path: "/mutate"
     rules:
@@ -20,5 +20,5 @@ webhooks:
     admissionReviewVersions: ["v1", "v1beta1"]
     sideEffects: None
 {{- end }}
-    failurePolicy: {{ include "talend-vault-sidecar-injector.failurePolicy" .Values }}
-{{ include "talend-vault-sidecar-injector.namespaceSelector" . | indent 4 }}
+    failurePolicy: {{ include "open-vault-agent-injector.failurePolicy" .Values }}
+{{ include "open-vault-agent-injector.namespaceSelector" . | indent 4 }}

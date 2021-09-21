@@ -7,18 +7,18 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test-app3
-      com.talend.service: test-app3-svc
+      com.ovai.application: test-app3
+      com.ovai.service: test-app3-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/role: "test"
-        sidecar.vault.talend.org/secrets-path: "secret/test/test-app-svc"
-        sidecar.vault.talend.org/secrets-destination: "secrets.properties,supersecrets.properties"
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/role: "test"
+        ovai.asaintsever.org/secrets-path: "secret/test/test-app-svc"
+        ovai.asaintsever.org/secrets-destination: "secrets.properties,supersecrets.properties"
       labels:
-        com.talend.application: test-app3
-        com.talend.service: test-app3-svc
+        com.ovai.application: test-app3
+        com.ovai.service: test-app3-svc
     spec:
       serviceAccountName: default
       containers:
@@ -28,10 +28,10 @@ spec:
             - "sh"
             - "-c"
             - >
-              while true;do echo "My secrets are: $(cat /opt/talend/secrets/supersecrets.properties)"; sleep 5; done
+              while true;do echo "My secrets are: $(cat /opt/ovai/secrets/supersecrets.properties)"; sleep 5; done
           volumeMounts:
             - name: secrets
-              mountPath: /opt/talend/secrets
+              mountPath: /opt/ovai/secrets
       volumes:
         - name: secrets
           emptyDir:

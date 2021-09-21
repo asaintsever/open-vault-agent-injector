@@ -14,7 +14,7 @@
 
 **Ready to use sample manifests are provided under [samples](../samples) folder**. Just deploy them using `kubectl apply -f <sample file>`.
 
-Examples hereafter highlight all the features of `Vault Sidecar Injector` through the supported [annotations](Usage.md#annotations).
+Examples hereafter highlight all the features of `Open Vault Agent Injector` through the supported [annotations](Usage.md#annotations).
 
 ## Using Vault Kubernetes Auth Method
 
@@ -25,13 +25,13 @@ Examples hereafter highlight all the features of `Vault Sidecar Injector` throug
 Show example
 </summary>
 
-Only mandatory annotation to ask for Vault Agent injection is `sidecar.vault.talend.org/inject`.
+Only mandatory annotation to ask for Vault Agent injection is `ovai.asaintsever.org/inject`.
 
 It means that, with the provided manifest below:
 
-- Vault authentication done using role `test-app-1` (value of `com.talend.application` label)
+- Vault authentication done using role `test-app-1` (value of `com.ovai.application` label)
 - secrets fetched from Vault's path `secret/test-app-1/test-app-1-svc` using default template
-- secrets to be stored into `/opt/talend/secrets/secrets.properties`
+- secrets to be stored into `/opt/ovai/secrets/secrets.properties`
 
 ```yaml
 apiVersion: apps/v1
@@ -42,15 +42,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test-app-1
-      com.talend.service: test-app-1-svc
+      com.ovai.application: test-app-1
+      com.ovai.service: test-app-1-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
+        ovai.asaintsever.org/inject: "true"
       labels:
-        com.talend.application: test-app-1
-        com.talend.service: test-app-1-svc
+        com.ovai.application: test-app-1
+        com.ovai.service: test-app-1-svc
     spec:
       serviceAccountName: ...
       containers:
@@ -69,10 +69,10 @@ Show example
 
 With the provided manifest below:
 
-- Vault authentication done using role `test-app-1` (value of `com.talend.application` label)
+- Vault authentication done using role `test-app-1` (value of `com.ovai.application` label)
 - secrets fetched from Vault's path `secret/test-app-1/test-app-1-svc` using default template
-- secrets to be stored into `/opt/talend/secrets/secrets.properties`
-- as we specified *static* for `sidecar.vault.talend.org/secrets-type`, the secrets **will not be refreshed** but fetched only once
+- secrets to be stored into `/opt/ovai/secrets/secrets.properties`
+- as we specified *static* for `ovai.asaintsever.org/secrets-type`, the secrets **will not be refreshed** but fetched only once
 
 ```yaml
 apiVersion: apps/v1
@@ -83,16 +83,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test-app-1
-      com.talend.service: test-app-1-svc
+      com.ovai.application: test-app-1
+      com.ovai.service: test-app-1-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-type: "static" # static secrets
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-type: "static" # static secrets
       labels:
-        com.talend.application: test-app-1
-        com.talend.service: test-app-1-svc
+        com.ovai.application: test-app-1
+        com.ovai.service: test-app-1-svc
     spec:
       serviceAccountName: ...
       containers:
@@ -111,7 +111,7 @@ Show example
 
 With the provided manifest below:
 
-- Vault authentication done using role `test-app-1` (value of `com.talend.application` label)
+- Vault authentication done using role `test-app-1` (value of `com.ovai.application` label)
 - secrets fetched from Vault's path `secret/test-app-1/test-app-1-svc` using default template
 - secrets to be injected into environment values named after secret keys
 
@@ -126,17 +126,17 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test-app-1
-      com.talend.service: test-app-1-svc
+      com.ovai.application: test-app-1
+      com.ovai.service: test-app-1-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-injection-method: "env"  # Secrets from env vars
-        sidecar.vault.talend.org/secrets-type: "static" # env vars injection only support static secrets
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-injection-method: "env"  # Secrets from env vars
+        ovai.asaintsever.org/secrets-type: "static" # env vars injection only support static secrets
       labels:
-        com.talend.application: test-app-1
-        com.talend.service: test-app-1-svc
+        com.ovai.application: test-app-1
+        com.ovai.service: test-app-1-svc
     spec:
       serviceAccountName: ...
       containers:
@@ -155,16 +155,16 @@ Refer to [samples](../samples) folder for complete examples.
 When using Kubernetes Jobs, there are specific additional requirements:
 
 - **Use of `serviceAccountName` attribute** in manifest, with role allowing to perform GET action on pods (needed to poll for job's pod status)
-- **Do not make use of annotation `sidecar.vault.talend.org/secrets-hook`** as it will immediately put the job in error state. An error will be raised if this annotation is set on jobs.
+- **Do not make use of annotation `ovai.asaintsever.org/secrets-hook`** as it will immediately put the job in error state. An error will be raised if this annotation is set on jobs.
 
-> Note: This hook is meant to be used with regular workloads only (ie Kubernetes Deployments) as it forces a restart of the application container until secrets are available in application's context. With jobs, as `Vault Sidecar Injector` looks after status of the job container, the injected signaling mechanism will terminate all the sidecars upon job exit thus preventing use of the hook.
+> Note: This hook is meant to be used with regular workloads only (ie Kubernetes Deployments) as it forces a restart of the application container until secrets are available in application's context. With jobs, as `Open Vault Agent Injector` looks after status of the job container, the injected signaling mechanism will terminate all the sidecars upon job exit thus preventing use of the hook.
 
 <details>
 <summary>
 Show example
 </summary>
 
-When submitting a job, use annotation `sidecar.vault.talend.org/mode` and set value to `job`.
+When submitting a job, use annotation `ovai.asaintsever.org/mode` and set value to `job`.
 
 The service account used to run the job should at least have the following permissions:
 
@@ -210,11 +210,11 @@ spec:
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/mode: "job"
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/mode: "job"
       labels:
-        com.talend.application: test
-        com.talend.service: test-app-svc
+        com.ovai.application: test
+        com.ovai.service: test-app-svc
     spec:
       restartPolicy: Never
       serviceAccountName: job-sa
@@ -227,7 +227,7 @@ spec:
             - |
               while true; do
                 echo "Wait for secrets file before running job..."
-                if [ -f "/opt/talend/secrets/secrets.properties" ]; then
+                if [ -f "/opt/ovai/secrets/secrets.properties" ]; then
                   echo "Secrets available"
                   break
                 fi
@@ -250,7 +250,7 @@ Show example
 
 This sample demonstrates how to enable the proxy mode in addition to the secrets mode used in previous samples. We are here again using a Kubernetes job so we reuse the dedicated service account.
 
-Key annotation to use is `sidecar.vault.talend.org/mode` to let `Vault Sidecar Injector` knows that proxy mode must be enabled. Optional `sidecar.vault.talend.org/proxy-port` annotation can be handy if default proxy port has to be customized.
+Key annotation to use is `ovai.asaintsever.org/mode` to let `Open Vault Agent Injector` knows that proxy mode must be enabled. Optional `ovai.asaintsever.org/proxy-port` annotation can be handy if default proxy port has to be customized.
 
 Once enabled, your application container can directly interact with the Vault server by sending requests to the injected Vault Agent sidecar that now also acts as a proxy handling authentication with the server. The proxy is available at `http://127.0.0.1:<proxy port>`.
 
@@ -292,12 +292,12 @@ spec:
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/mode: "secrets,proxy,job"  # Enable 'secrets', 'proxy' and 'job' modes
-        sidecar.vault.talend.org/proxy-port: "9999"     # Optional: override default proxy port value (8200)
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/mode: "secrets,proxy,job"  # Enable 'secrets', 'proxy' and 'job' modes
+        ovai.asaintsever.org/proxy-port: "9999"     # Optional: override default proxy port value (8200)
       labels:
-        com.talend.application: test
-        com.talend.service: test-app-svc
+        com.ovai.application: test
+        com.ovai.service: test-app-svc
     spec:
       restartPolicy: Never
       serviceAccountName: job-sa
@@ -311,7 +311,7 @@ spec:
               set -e
               while true; do
                 echo "Wait for secrets file before running job..."
-                if [ -f "/opt/talend/secrets/secrets.properties" ]; then
+                if [ -f "/opt/ovai/secrets/secrets.properties" ]; then
                   echo "Secrets available"
                   break
                 fi
@@ -338,7 +338,7 @@ Show example
 
 Several optional annotations to end up with:
 
-- Vault authentication using role `test-app-4` (value of `com.talend.application` label)
+- Vault authentication using role `test-app-4` (value of `com.ovai.application` label)
 - secrets fetched from Vault's path `secret/test-app-4-svc` using default template
 - secrets to be stored into `/opt/app/secrets.properties`
 - secrets changes trigger notification command `curl localhost:8888/actuator/refresh -d {} -H 'Content-Type: application/json'`
@@ -352,17 +352,17 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test-app-4
-      com.talend.service: test-app-4-svc
+      com.ovai.application: test-app-4
+      com.ovai.service: test-app-4-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-path: "secret/test-app-4-svc"
-        sidecar.vault.talend.org/notify: "curl localhost:8888/actuator/refresh -d {} -H 'Content-Type: application/json'"
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-path: "secret/test-app-4-svc"
+        ovai.asaintsever.org/notify: "curl localhost:8888/actuator/refresh -d {} -H 'Content-Type: application/json'"
       labels:
-        com.talend.application: test-app-4
-        com.talend.service: test-app-4-svc
+        com.ovai.application: test-app-4
+        com.ovai.service: test-app-4-svc
     spec:
       serviceAccountName: ...
       containers:
@@ -388,7 +388,7 @@ Show example
 
 Several optional annotations to end up with:
 
-- Vault authentication using role `test-app-6` (value of `com.talend.application` label)
+- Vault authentication using role `test-app-6` (value of `com.ovai.application` label)
 - hook injected in application's container(s) to wait for secrets file availability
 - secrets fetched from Vault's path `aws/creds/test-app-6` using **one custom template**
 - secrets to be stored into `/custom-folder/creds.properties`
@@ -403,15 +403,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test-app-6
-      com.talend.service: test-app-6-svc
+      com.ovai.application: test-app-6
+      com.ovai.service: test-app-6-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-hook: "true"
-        sidecar.vault.talend.org/secrets-destination: "creds.properties"
-        sidecar.vault.talend.org/secrets-template: |
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-hook: "true"
+        ovai.asaintsever.org/secrets-destination: "creds.properties"
+        ovai.asaintsever.org/secrets-template: |
           {{ with secret "aws/creds/test-app-6" }}
           {{ if .Data.access_key }}
           test-app-6.s3.credentials.accessKey={{ .Data.access_key }}
@@ -421,8 +421,8 @@ spec:
           {{ end }}
           {{ end }}
       labels:
-        com.talend.application: test-app-6
-        com.talend.service: test-app-6-svc
+        com.ovai.application: test-app-6
+        com.ovai.service: test-app-6-svc
     spec:
       serviceAccountName: ...
       containers:
@@ -449,10 +449,10 @@ Show example
 
 Several optional annotations to end up with:
 
-- Vault authentication using role `test-app-2` (value of `com.talend.application` label)
+- Vault authentication using role `test-app-2` (value of `com.ovai.application` label)
 - hook injected in application's container(s) to wait for secrets file availability
 - secrets fetched from Vault's path `secret/test-app-2/test-app-2-svc` using **several custom templates** (use `---` as separation between them)
-- secrets to be stored into `/opt/talend/secrets/secrets.properties` (using first template) and `/opt/talend/secrets/secrets2.properties` (using second template)
+- secrets to be stored into `/opt/ovai/secrets/secrets.properties` (using first template) and `/opt/ovai/secrets/secrets2.properties` (using second template)
 
 <!-- {% raw %} -->
 ```yaml
@@ -464,15 +464,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test-app-2
-      com.talend.service: test-app-2-svc
+      com.ovai.application: test-app-2
+      com.ovai.service: test-app-2-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-hook: "true"
-        sidecar.vault.talend.org/secrets-destination: "secrets.properties,secrets2.properties"
-        sidecar.vault.talend.org/secrets-template: |
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-hook: "true"
+        ovai.asaintsever.org/secrets-destination: "secrets.properties,secrets2.properties"
+        ovai.asaintsever.org/secrets-template: |
           {{ with secret "secret/test-app-2/test-app-2-svc" }}
           {{ if .Data.SECRET1 }}
           my_custom_key_name1={{ .Data.SECRET1 }}
@@ -485,8 +485,8 @@ spec:
           {{ end }}
           {{ end }}
       labels:
-        com.talend.application: test-app-2
-        com.talend.service: test-app-2-svc
+        com.ovai.application: test-app-2
+        com.ovai.service: test-app-2-svc
     spec:
       serviceAccountName: ...
       containers:
@@ -506,8 +506,8 @@ spec:
 Show example
 </summary>
 
-- Ask Vault Sidecar Injector to use Vault authentication method `approle` (instead of the default which is `kubernetes`)
-- Vault AppRole requires info stored into 2 files (containing role id and secret id) that have to be provided to Vault Sidecar Injector: in the sample below this is done via an init container (replace placeholders \<ROLE ID from Vault\> and \<SECRET ID from Vault\> by values generated by Vault server using commands `vault read auth/approle/role/test/role-id` and `vault write -f auth/approle/role/test/secret-id`)
+- Ask Open Vault Agent Injector to use Vault authentication method `approle` (instead of the default which is `kubernetes`)
+- Vault AppRole requires info stored into 2 files (containing role id and secret id) that have to be provided to Open Vault Agent Injector: in the sample below this is done via an init container (replace placeholders \<ROLE ID from Vault\> and \<SECRET ID from Vault\> by values generated by Vault server using commands `vault read auth/approle/role/test/role-id` and `vault write -f auth/approle/role/test/secret-id`)
 
 ```yaml
 apiVersion: apps/v1
@@ -519,16 +519,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test
-      com.talend.service: test-app-svc
+      com.ovai.application: test
+      com.ovai.service: test-app-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/auth: "approle"
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/auth: "approle"
       labels:
-        com.talend.application: test
-        com.talend.service: test-app-svc
+        com.ovai.application: test
+        com.ovai.service: test-app-svc
     spec:
       serviceAccountName: default
       initContainers:
@@ -538,11 +538,11 @@ spec:
             - "sh"
             - "-c"
             - |
-              echo "<ROLE ID from Vault>" > /opt/talend/secrets/approle_roleid
-              echo "<SECRET ID from Vault>" > /opt/talend/secrets/approle_secretid
+              echo "<ROLE ID from Vault>" > /opt/ovai/secrets/approle_roleid
+              echo "<SECRET ID from Vault>" > /opt/ovai/secrets/approle_secretid
           volumeMounts:
             - name: secrets
-              mountPath: /opt/talend/secrets
+              mountPath: /opt/ovai/secrets
       containers:
         - name: test-app-8-container
           image: busybox:1.28
@@ -550,6 +550,6 @@ spec:
             - "sh"
             - "-c"
             - >
-              while true;do echo "My secrets are: $(cat /opt/talend/secrets/secrets.properties)"; sleep 5; done
+              while true;do echo "My secrets are: $(cat /opt/ovai/secrets/secrets.properties)"; sleep 5; done
 ```
 </details>

@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -30,13 +28,13 @@ import (
 )
 
 func init() {
-	jsonLog, _ := strconv.ParseBool(os.Getenv("VSI_ENV_LOG_JSON"))
+	jsonLog, _ := strconv.ParseBool(os.Getenv("OVAI_ENV_LOG_JSON"))
 	if jsonLog {
 		// Log as JSON instead of the default ASCII formatter
 		log.SetFormatter(&log.JSONFormatter{})
 	}
 
-	logLevel, err := strconv.Atoi(os.Getenv("VSI_ENV_LOG_LEVEL"))
+	logLevel, err := strconv.Atoi(os.Getenv("OVAI_ENV_LOG_LEVEL"))
 	if err != nil {
 		// Only log the warning severity or above
 		log.SetLevel(log.WarnLevel)
@@ -47,8 +45,8 @@ func init() {
 
 // Program accepts following env vars:
 //
-// VSI_ENV_LOG_JSON				true/false (default)	Log as JSON
-// VSI_ENV_LOG_LEVEL			0 to 6 (default: 3)		Log level (3 for warning, 6 to trace everything)
+// OVAI_ENV_LOG_JSON				true/false (default)	Log as JSON
+// OVAI_ENV_LOG_LEVEL			0 to 6 (default: 3)		Log level (3 for warning, 6 to trace everything)
 //
 func main() {
 	var entrypointCmd []string
@@ -66,12 +64,12 @@ func main() {
 	}
 
 	// Our program has been copied in same location as secrets files
-	vsienvProcess, err := os.Executable()
+	vienvProcess, err := os.Executable()
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 
-	secretsFilesPath := filepath.Dir(vsienvProcess)
+	secretsFilesPath := filepath.Dir(vienvProcess)
 	secretsFiles, err := ioutil.ReadDir(secretsFilesPath)
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -85,7 +83,7 @@ func main() {
 		secretsFile := path.Join(secretsFilesPath, fsecrets.Name())
 
 		// Do not consider our program
-		if secretsFile == vsienvProcess {
+		if secretsFile == vienvProcess {
 			continue
 		}
 

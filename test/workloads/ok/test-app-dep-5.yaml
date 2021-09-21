@@ -7,16 +7,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      com.talend.application: test
-      com.talend.service: test-app-svc
+      com.ovai.application: test
+      com.ovai.service: test-app-svc
   template:
     metadata:
       annotations:
-        sidecar.vault.talend.org/inject: "true"
-        sidecar.vault.talend.org/secrets-type: "static" # static secrets
+        ovai.asaintsever.org/inject: "true"
+        ovai.asaintsever.org/secrets-type: "static" # static secrets
       labels:
-        com.talend.application: test
-        com.talend.service: test-app-svc
+        com.ovai.application: test
+        com.ovai.service: test-app-svc
     spec:
       serviceAccountName: default
       containers:
@@ -27,7 +27,7 @@ spec:
             - "-c"
             - |
               set -e
-              echo "My secrets are: $(cat /opt/talend/secrets/secrets.properties)"
+              echo "My secrets are: $(cat /opt/ovai/secrets/secrets.properties)"
               while true;do
                 sleep 5
               done

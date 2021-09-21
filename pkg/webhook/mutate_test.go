@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -15,6 +13,8 @@
 package webhook
 
 import (
+	cfg "asaintsever/open-vault-agent-injector/pkg/config"
+	ctx "asaintsever/open-vault-agent-injector/pkg/context"
 	"encoding/json"
 	"errors"
 	"flag"
@@ -23,8 +23,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	cfg "talend/vault-sidecar-injector/pkg/config"
-	ctx "talend/vault-sidecar-injector/pkg/context"
 	"testing"
 
 	"k8s.io/apimachinery/pkg/util/uuid"
@@ -139,12 +137,12 @@ func mutateWorkloads(manifestsPattern string, test assertFunc) error {
 }
 
 func createTestVaultInjector() (*VaultInjector, error) {
-	vsiCfg, err := cfg.Load(
+	oviCfg, err := cfg.Load(
 		cfg.WhSvrParameters{
 			Port: 0, MetricsPort: 0,
 			CACertFile: "", CertFile: "", KeyFile: "",
 			WebhookCfgName:      "",
-			AnnotationKeyPrefix: "sidecar.vault.talend.org", AppLabelKey: "com.talend.application", AppServiceLabelKey: "com.talend.service",
+			AnnotationKeyPrefix: "ovai.asaintsever.org", AppLabelKey: "com.ovai.application", AppServiceLabelKey: "com.ovai.service",
 			InjectionCfgFile:      "../../test/config/injectionconfig.yaml",
 			ProxyCfgFile:          "../../test/config/proxyconfig.hcl",
 			TemplateBlockFile:     "../../test/config/tmplblock.hcl",
@@ -157,7 +155,7 @@ func createTestVaultInjector() (*VaultInjector, error) {
 	}
 
 	// Create webhook instance
-	return New(vsiCfg, nil), nil
+	return New(oviCfg, nil), nil
 }
 
 func (tr *testResource) load() (*admv1.AdmissionReview, error) {

@@ -1,5 +1,3 @@
-// Copyright © 2019-2021 Talend - www.talend.com
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -71,7 +69,7 @@ func GetModesStatus(requestedModes []string, modes map[string]bool) {
 				}
 
 				if !bModeFound {
-					klog.Warningf("Ignore unknown requested Vault Sidecar Injector mode: %s", requestedMode)
+					klog.Warningf("Ignore unknown requested Open Vault Agent Injector mode: %s", requestedMode)
 				}
 			}
 		}
