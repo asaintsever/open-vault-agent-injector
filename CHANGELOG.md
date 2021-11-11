@@ -2,9 +2,13 @@
 
 ## Release v1.0.1 - 2021-11-11
 
+**Added**
+
+- [OVAI #2](https://github.com/asaintsever/open-vault-agent-injector/pull/2) - Add issuer on [vault k8s config](https://www.vaultproject.io/docs/auth/kubernetes#discovering-the-service-account-issuer) for Kubernetes 1.21+
+
 **Fixed**
 
-- [OVAI #2](https://github.com/asaintsever/open-vault-agent-injector/pull/2) - Preserve existing annotations in submitted pod
+- [OVAI #3](https://github.com/asaintsever/open-vault-agent-injector/pull/3) - Preserve existing annotations in submitted pod
 
 ## Release v1.0.0 - 2021-09-21
 
