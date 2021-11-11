@@ -27,7 +27,22 @@ export VAULT_SA_NAME=$(kubectl get sa vault -o jsonpath="{.secrets[*]['name']}")
 export SA_JWT_TOKEN=$(kubectl get secret $VAULT_SA_NAME -o jsonpath="{.data.token}" | base64 --decode; echo)
 export SA_CA_CRT=$(kubectl get secret $VAULT_SA_NAME -o jsonpath="{.data['ca\.crt']}" | base64 --decode; echo)
 
-${VAULT_POD} "VAULT_TOKEN=root vault write auth/kubernetes/config kubernetes_host=\"https://kubernetes:443\" kubernetes_ca_cert=\"$SA_CA_CRT\" token_reviewer_jwt=\"$SA_JWT_TOKEN\""
+K8S_VER_MAJOR=$(kubectl version --short -o json | jq -r '.serverVersion.major')
+K8S_VER_MINOR=$(kubectl version --short -o json | jq -r '.serverVersion.minor')
+
+if [ $K8S_VER_MAJOR -ge 1 ] && [ $K8S_VER_MINOR -gt 20 ];then
+    echo "Kubernetes 1.21+: get service account issuer"
+    # See ref: https://www.vaultproject.io/docs/auth/kubernetes#discovering-the-service-account-issuer
+    kubectl proxy &
+    echo "Wait ..."
+    sleep 10
+    export SA_ISSUER=$(curl -s http://127.0.0.1:8001/.well-known/openid-configuration | jq -r .issuer)
+    echo "Get issuer for cluster: $SA_ISSUER"
+
+    ${VAULT_POD} "VAULT_TOKEN=root vault write auth/kubernetes/config kubernetes_host=\"https://kubernetes:443\" kubernetes_ca_cert=\"$SA_CA_CRT\" token_reviewer_jwt=\"$SA_JWT_TOKEN\" issuer=\"$SA_ISSUER\""
+else
+    ${VAULT_POD} "VAULT_TOKEN=root vault write auth/kubernetes/config kubernetes_host=\"https://kubernetes:443\" kubernetes_ca_cert=\"$SA_CA_CRT\" token_reviewer_jwt=\"$SA_JWT_TOKEN\""
+fi
 
 # Create roles for Vault K8S Auth Method
 ${VAULT_POD} "VAULT_TOKEN=root vault write auth/kubernetes/role/test bound_service_account_names=default,job-sa bound_service_account_namespaces=default policies=test_pol ttl=5m"
