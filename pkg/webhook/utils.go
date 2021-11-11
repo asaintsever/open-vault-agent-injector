@@ -119,18 +119,15 @@ Loop:
 func updateAnnotation(target map[string]string, added map[string]string) (patch []ctx.PatchOperation) {
 	for key, value := range added {
 		if target == nil || target[key] == "" {
-			target = map[string]string{}
 			patch = append(patch, ctx.PatchOperation{
-				Op:   ctx.JsonPatchOpAdd,
-				Path: ctx.JsonPathAnnotations,
-				Value: map[string]string{
-					key: value,
-				},
+				Op:    ctx.JsonPatchOpAdd,
+				Path:  ctx.JsonPathAnnotations + "/" + strings.Replace(key, "/", "~1", -1), // as per http://jsonpatch.com/#json-pointer
+				Value: value,
 			})
 		} else {
 			patch = append(patch, ctx.PatchOperation{
 				Op:    ctx.JsonPatchOpReplace,
-				Path:  ctx.JsonPathAnnotations + "/" + key,
+				Path:  ctx.JsonPathAnnotations + "/" + strings.Replace(key, "/", "~1", -1), // as per http://jsonpatch.com/#json-pointer
 				Value: value,
 			})
 		}

@@ -1,5 +1,11 @@
 # Changelog for Open Vault Agent Injector
 
+## Release v1.0.1 - 2021-11-11
+
+**Fixed**
+
+- [OVAI #2](https://github.com/asaintsever/open-vault-agent-injector/pull/2) - Preserve existing annotations in submitted pod
+
 ## Release v1.0.0 - 2021-09-21
 
 **Changed**
