@@ -3,10 +3,11 @@
 
 `Open Vault Agent Injector` allows to dynamically inject HashiCorp Vault Agent as either an init or a sidecar container, along with configuration and volumes, in any matching pod manifest **to seamlessly fetch secrets from Vault**. Pods willing to benefit from this feature just have to add some custom annotations to ask for the injection **at deployment time**.
 
-*This component is based on a fork of [Talend's Vault Sidecar Injector](https://github.com/Talend/vault-sidecar-injector).*
+*This component is based on a fork of [Talend's Vault Sidecar Injector](https://github.com/Talend/vault-sidecar-injector) from the author of the original component.*
 
 ## Announcements
 
+- 2021-11: [1.0.1 release](https://github.com/asaintsever/open-vault-agent-injector/releases/tag/v1.0.1) with fix to preserve annotations
 - 2021-09: First Open Vault Agent Injector release!
 - 2020-06: [Inject secrets in your pod as environment variables](doc/announcements/Injecting-secrets-in-env.md)
 - 2020-03: [Static vs Dynamic secrets](doc/announcements/Static-vs-Dynamic-Secrets.md)
